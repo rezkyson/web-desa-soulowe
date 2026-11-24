@@ -280,6 +280,24 @@
   .hero-card-figure img { aspect-ratio: 16 / 9; }
   .hero-seal { display: none; }
   .hero-foot { padding-top: 28px; flex-direction: column; align-items: flex-start; gap: 18px; }
+
+  /* The overlay header turns its links white so they sit on the hero photo.
+     The open mobile panel is opaque paper, so the links have to come back to
+     the dark palette or they vanish into the background. */
+  .public-header.is-overlay nav.mobile-open {
+    max-height: calc(100vh - 79px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .public-header.is-overlay nav.mobile-open > a { color: var(--text); }
+  .public-header.is-overlay nav.mobile-open > a:hover { color: var(--ink-forest); }
+  .public-header.is-overlay nav.mobile-open > a[aria-current='page'] { color: var(--ink-forest); }
+  /* The lime contact pill is its own surface, so it keeps the dark label. */
+  .public-header.is-overlay nav.mobile-open > a.nav-contact,
+  .public-header.is-overlay nav.mobile-open > a.nav-contact:hover {
+    color: var(--ink-forest);
+  }
+}
 }
 
 @media (max-width: 640px) {

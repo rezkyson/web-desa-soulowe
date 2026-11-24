@@ -1,0 +1,31 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "checkedAt": "2026-11-24T05:31:52.936Z",
+  "browser": "Chromium",
+  "checks": [
+    "panel stays fully opaque while the open animation runs",
+    "panel is opaque (rgb(245, 248, 241))",
+    "\"Beranda\" 14.35:1",
+    "\"Profil Desa\" 6.66:1",
+    "\"Pemerintahan\" 6.66:1",
+    "\"Data Desa\" 6.66:1",
+    "\"Keuangan\" 6.66:1",
+    "\"Berita\" 6.66:1",
+    "\"Galeri\" 6.66:1",
+    "\"Hubungi desa\" 8.83:1",
+    "Escape closes the panel and returns focus to the toggle",
+    "320x480: panel 401px tall, overflow auto",
+    "inner page menu keeps readable links"
+  ],
+  "errors": [],
+  "measured": [
+    "Beranda",
+    "Profil Desa",
+    "Pemerintahan",
+    "Data Desa",
+    "Keuangan",
+    "Berita",
+    "Galeri",
+    "Hubungi desa"
+  ]
+}

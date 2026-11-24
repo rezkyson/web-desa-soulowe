@@ -23,8 +23,11 @@
 .public-header nav > a:hover::before { transform: scaleX(1); }
 .public-header .brand img { transition: transform 220ms ease-out; }
 .public-header .brand:hover img { transform: translateY(-2px); }
+/* The panel is opaque and covers page content, so it must never fade in from
+   transparent: during the fade the hero text shows through the menu. Slide it
+   instead, which keeps the panel fully opaque the whole time. */
 .public-header nav.mobile-open { transform-origin: top; animation: menu-enter 180ms ease-out; }
-@keyframes menu-enter { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes menu-enter { from { transform: translateY(-6px); } to { transform: translateY(0); } }
 
 .public-main .button:active { transform: translateY(1px); }
 .section { padding-block: 92px; }
