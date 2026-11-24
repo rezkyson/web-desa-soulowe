@@ -1,0 +1,16 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "checkedAt": "2026-11-23T14:46:22.050Z",
+  "browser": "Chromium",
+  "coordinates": [
+    -1.0258227,
+    119.9240974
+  ],
+  "checks": [
+    "Real OSM tiles, office marker/popup, attribution, Google Maps link, zoom, no overflow: / 1440px",
+    "Real OSM tiles, office marker/popup, attribution, Google Maps link, zoom, no overflow: /kontak 390px",
+    "Tile failure displays connection warning and retains external map link",
+    "No-JS fallback retains office Google Maps link"
+  ],
+  "errors": []
+}

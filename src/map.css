@@ -1,0 +1,19 @@
+.office-map { min-width: 0; overflow: hidden; border: 1px solid #d5ddcc; border-radius: 7px; background: #fff; }
+.office-map-canvas { position: relative; }
+.office-map .map-live { height: 360px; width: 100%; z-index: 1; background: #e8eddf; font-family: 'DM Sans Variable', sans-serif; }
+.map-status { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px; gap: 15px; text-align: center; color: #4c6344; background: #edf1e5; font-size: .84rem; }
+.office-map-footer { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 18px 20px; }
+.office-map-footer>div { display: flex; flex-direction: column; gap: 5px; }
+.office-map-footer strong { font-size: .8rem; font-weight: 600; }
+.office-map-footer small { color: #647068; font-size: .68rem; }
+.office-map-footer a { display: inline-flex; align-items: center; gap: 7px; font-size: .74rem; color: #173e32; font-weight: 600; flex-shrink: 0; min-height: 40px; }
+.office-map-footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.office-map .leaflet-popup-content { margin: 14px 18px; font-size: .8rem; line-height: 1.7; }
+.office-map .leaflet-popup-content p { font-size: .72rem; margin: 5px 0 0; line-height: 1.6; }
+.office-map .leaflet-container a:focus-visible { outline: 3px solid #b1904e; outline-offset: 3px; }
+.office-map .leaflet-control-attribution { font-size: 10px; }
+.office-map-pin { background: transparent; border: 0; }
+.office-map-pin>span { display: block; width: 28px; height: 28px; background: #173e32; border: 3px solid #fff; border-radius: 50% 50% 50% 0; transform: translateY(2px) rotate(-45deg); box-shadow: 0 2px 5px #14251b40; }
+.office-map-pin>span::after { content: ''; position: absolute; width: 8px; height: 8px; top: 7px; left: 7px; border-radius: 50%; background: #f0efdc; }
+.map-tile-error { padding: 12px 18px; margin: 0; font-size: .73rem; line-height: 1.7; background: #f4efdf; color: #6c603c; }
+@media (max-width: 640px) { .office-map .map-live { height: 310px; }.office-map-footer { flex-direction: column; align-items: flex-start; gap: 6px; padding: 15px 18px; }.office-map-footer a { font-size: .75rem; } }

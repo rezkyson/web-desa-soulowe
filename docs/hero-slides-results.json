@@ -1,0 +1,26 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "checkedAt": "2026-11-23T14:47:59.763Z",
+  "browser": "Chromium",
+  "checks": [
+    "4 unique slides sourced from the newest albums",
+    "random order confirmed across loads (5 distinct sequences in 6)",
+    "exactly one active frame",
+    "autoplay advances after the interval",
+    "no play/pause control, the slideshow is not visitor-stopped",
+    "active dot fills progressively with the current frame",
+    "dot navigation selects a specific frame",
+    "hover holds the frame so a visitor can look at a photo",
+    "slide controls are keyboard focusable",
+    "reduced motion holds one still frame, no progress fill",
+    "mobile: no overflow, slideshow keeps a usable size",
+    "all slides carry descriptive alt text"
+  ],
+  "errors": [],
+  "sources": [
+    "/images/field.jpg",
+    "/images/seedlings.jpg",
+    "/images/fields.jpg",
+    "/images/landscape.jpg"
+  ]
+}

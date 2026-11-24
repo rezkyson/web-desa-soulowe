@@ -1,0 +1,223 @@
+/* Token layer for the cinematic-heritage direction (DESIGN.md v2.0).
+   Loaded after app.css so existing components inherit the new palette
+   without rewriting every rule. */
+:root {
+  --ink-forest: #0b2a1e;
+  --forest: #123f2c;
+  --leaf: #2f6b4a;
+  --signal: #a6d17f;
+  --mist: #e9f3e4;
+  --paper: #f5f8f1;
+  --white: #ffffff;
+  --text: #4a5c50;
+  --text-soft: #5d6f63;
+  --line: #d8e3d5;
+  --danger: #a63232;
+  --soft-danger: #fdf1ef;
+
+  /* Legacy names kept so existing rules resolve to the new palette. */
+  --hover: #245739;
+  --muted: var(--text-soft);
+  --subtle: var(--mist);
+
+  --font-display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --font-body: 'Instrument Sans Variable', system-ui, sans-serif;
+  --heading: var(--font-display);
+
+  --radius-control: 6px;
+  --radius-card: 14px;
+  --radius-panel: 24px;
+  --shell: 1280px;
+  --gutter: 20px;
+}
+
+html { background: var(--paper); }
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  color: var(--ink-forest);
+}
+h1 { letter-spacing: -0.05em; line-height: 1.04; }
+p { color: var(--text); }
+strong { color: var(--ink-forest); }
+
+::selection { background: var(--signal); color: var(--ink-forest); }
+:focus-visible { outline: 3px solid var(--leaf); outline-offset: 3px; }
+
+.container { width: min(var(--shell), calc(100% - (var(--gutter) * 2))); }
+
+.button {
+  background: var(--leaf);
+  border-radius: var(--radius-control);
+  font-family: var(--font-body);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  min-height: 48px;
+  padding: 13px 24px;
+}
+.button:hover { background: var(--forest); }
+.button.secondary {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--ink-forest) 22%, transparent);
+  color: var(--ink-forest);
+}
+.button.secondary:hover { background: var(--mist); }
+.button.cream { background: var(--white); color: var(--ink-forest); }
+.button.cream:hover { background: var(--mist); }
+.button.danger { background: var(--danger); }
+.button.danger:hover { background: #8a2727; }
+
+.icon-button { border-radius: var(--radius-control); }
+.icon-button:hover { background: color-mix(in srgb, var(--ink-forest) 7%, transparent); }
+
+.text-link { color: var(--leaf); font-weight: 600; }
+.text-link:hover { color: var(--ink-forest); }
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  color: var(--leaf);
+}
+.eyebrow.light { color: var(--signal); }
+
+.lead { color: var(--text); }
+.muted { color: var(--text-soft); }
+.source-note, .example-note { color: var(--text-soft); }
+
+.badge {
+  background: var(--mist);
+  color: var(--ink-forest);
+  border: 1px solid color-mix(in srgb, var(--leaf) 18%, transparent);
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.notice {
+  background: var(--mist);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  color: var(--text);
+}
+.notice svg { color: var(--leaf); }
+
+.feedback {
+  background: var(--mist);
+  border-color: color-mix(in srgb, var(--leaf) 32%, transparent);
+  color: var(--ink-forest);
+  border-radius: var(--radius-control);
+}
+.field-error { color: var(--danger); }
+
+input, textarea, select {
+  background: var(--white);
+  border-color: var(--line);
+  border-radius: var(--radius-control);
+  color: var(--ink-forest);
+  font-family: var(--font-body);
+}
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid var(--leaf);
+  border-color: var(--leaf);
+}
+label { font-family: var(--font-body); }
+
+/* Public header and footer inherit the new shell width. */
+.public-header { background: var(--paper); border-bottom: 1px solid var(--line); }
+.topline { background: var(--ink-forest); color: color-mix(in srgb, var(--signal) 72%, white); }
+.topline .container { min-height: 32px; }
+.brand strong { color: var(--ink-forest); font-family: var(--font-display); letter-spacing: 0.02em; }
+.brand small { color: var(--text-soft); }
+.public-header nav > a { color: var(--text); font-weight: 500; }
+.public-header nav > a:hover { color: var(--ink-forest); }
+.public-header nav > a[aria-current='page'] { color: var(--ink-forest); font-weight: 600; }
+.public-header nav > a[aria-current='page']::after { background: var(--signal); height: 2px; }
+.public-header nav .nav-contact {
+  border-color: color-mix(in srgb, var(--ink-forest) 18%, transparent);
+  border-radius: 100px;
+  background: var(--ink-forest);
+  color: var(--white);
+}
+.public-header nav .nav-contact:hover { background: var(--forest); color: var(--white); }
+
+.contact-strip { background: var(--mist); border-color: var(--line); }
+.contact-strip .eyebrow.light { color: var(--leaf); }
+.contact-strip p { color: var(--text-soft); }
+.contact-strip .button { background: var(--ink-forest); color: var(--white); border-color: transparent; }
+.contact-strip .button:hover { background: var(--forest); }
+
+.public-footer { background: var(--white); border-top: 1px solid var(--line); }
+.footer-grid h3 { color: var(--ink-forest); }
+.footer-grid p, .footer-grid > div > a:not(.brand) { color: var(--text-soft); }
+.footer-grid > div > a:hover { color: var(--leaf); }
+.footer-bottom { color: var(--text-soft); border-color: var(--line); }
+
+/* Inner page header: short dark band instead of the old pale block. */
+.page-heading {
+  background: var(--ink-forest);
+  border-bottom: 0;
+  padding: 30px 0 62px;
+}
+.page-heading .breadcrumb { color: color-mix(in srgb, var(--signal) 62%, white); }
+.page-heading .breadcrumb a:hover { color: var(--white); }
+.page-heading .eyebrow { color: var(--signal); }
+.page-heading h1 { color: var(--white); }
+.page-heading p { color: color-mix(in srgb, var(--signal) 62%, white); }
+
+/* Tables, data, finance read on white with the new green lines. */
+table { font-family: var(--font-body); }
+thead th { background: var(--mist); color: var(--ink-forest); }
+td { color: var(--text); }
+tbody tr:hover { background: color-mix(in srgb, var(--mist) 55%, white); }
+.table-total th, .table-total td { background: var(--mist); color: var(--ink-forest); }
+
+.filter-tabs button { border-color: var(--line); color: var(--text-soft); border-radius: 100px; }
+.filter-tabs button:hover { background: var(--mist); }
+.filter-tabs button.active { background: var(--ink-forest); border-color: var(--ink-forest); color: var(--white); }
+
+.data-stats { border-color: var(--line); }
+.data-stats span { color: var(--text-soft); }
+.data-stats strong { color: var(--ink-forest); font-family: var(--font-display); }
+
+.bar-track { background: var(--mist); }
+.bar-track span { background: var(--leaf); }
+
+.finance-highlight { background: var(--ink-forest); }
+.finance-highlight strong { color: var(--white); font-family: var(--font-display); }
+
+.official-avatar { background: var(--mist); color: var(--leaf); }
+.bpd-list > div { border-color: var(--line); }
+.contents > a { border-color: var(--line); color: var(--text); }
+.contents > a:hover { color: var(--leaf); }
+
+.profile-body blockquote { background: var(--ink-forest); color: color-mix(in srgb, var(--signal) 70%, white); }
+
+.map-fallback { background: var(--mist); border-color: var(--line); }
+.map-fallback h3 { color: var(--ink-forest); }
+
+.service-note { background: var(--mist); }
+
+/* Admin keeps the same palette but stays flat and quiet. */
+.admin-app { background: var(--paper); }
+.admin-sidebar { background: var(--ink-forest); }
+.admin-sidebar nav a[aria-current='page'] { background: var(--signal); color: var(--ink-forest); }
+.admin-sidebar nav a:hover { background: var(--forest); }
+.admin-topbar { background: var(--white); border-color: var(--line); }
+.admin-panel { background: var(--white); border-color: var(--line); border-radius: var(--radius-card); }
+.admin-stat-grid > div { background: var(--white); border-color: var(--line); border-radius: var(--radius-card); }
+.demo-banner { background: #f7f2e0; border-color: #e2d9bf; color: #6b5d33; }
+.login-story { background: var(--ink-forest); }
+.operator-avatar { background: var(--mist); color: var(--ink-forest); }
+.quick-links a { border-color: var(--line); }
+
+@media (min-width: 641px) { :root { --gutter: 32px; } }
+@media (min-width: 1024px) { :root { --gutter: 48px; } }

@@ -1,0 +1,16 @@
+node_modules/
+.svelte-kit/
+build/
+.vercel/
+.env
+.env.*
+!.env.example
+test-results/
+playwright-report/
+
+# Generated test screenshots, reproducible with bun run test:smoke
+docs/screenshots/
+
+# Internal working documents, not part of the deployed site
+/DESIGN.md
+/TASK.md

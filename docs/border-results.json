@@ -1,0 +1,17 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "checkedAt": "2026-11-23T14:46:10.401Z",
+  "browser": "Chromium",
+  "checks": [
+    "News borders paused below viewport",
+    "21st.dev-style conic highlight, transform rotation, 8 second orbit, correctly sized layer",
+    "Compact cards, controlled photo ratios, no overflow + gallery: 390px",
+    "Compact cards, controlled photo ratios, no overflow + gallery: 768px",
+    "Compact cards, controlled photo ratios, no overflow + gallery: 1440px",
+    "News read action works with keyboard",
+    "Filter removal/remount cleans observers and restores cards",
+    "Live reduced-motion setting disables border animation",
+    "No-JS SSR renders readable cards with a static border"
+  ],
+  "errors": []
+}

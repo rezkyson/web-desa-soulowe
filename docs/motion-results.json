@@ -1,0 +1,15 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "checkedAt": "2026-11-23T14:45:49.549Z",
+  "browser": "Chromium",
+  "checks": [
+    "Hero animation exists and runs once, not a decorative loop",
+    "Selected below-fold section reveals when scrolled into view",
+    "Keyboard focus immediately exposes content, no invisible focus trap",
+    "Rendered desktop/tablet/mobile, all reveals captured; no page overflow",
+    "Public navigation works with View Transition enhancement",
+    "Reduced motion: no hero/reveal animation, all content visible",
+    "No-JS fallback keeps SSR content visible"
+  ],
+  "errors": []
+}

@@ -1,0 +1,97 @@
+/* The user-pinned 21st.dev travelling-border treatment, ported to Svelte.
+   Only news cards animate. Other surfaces get quiet, static edges. */
+.animated-border {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: var(--border-width, 1px);
+  border-radius: 12px;
+  background: #cdd7c7;
+}
+.animated-border__light {
+  position: absolute;
+  pointer-events: none;
+  top: 50%; left: 50%;
+  width: var(--border-orbit-size, 0px);
+  height: var(--border-orbit-size, 0px);
+  margin-top: calc(var(--border-orbit-size, 0px) / -2);
+  margin-left: calc(var(--border-orbit-size, 0px) / -2);
+  /* User-requested conic highlight; it is exposed only through a 1px edge. */
+  background: conic-gradient(from 0deg, transparent 0 62%, var(--border-light, #6f9263) 82%, transparent 96%);
+  animation: border-orbit var(--border-duration, 8s) linear infinite;
+  animation-play-state: paused;
+}
+.animated-border[data-border-running="true"]>.animated-border__light { animation-play-state: running; }
+.animated-border__surface { position: relative; height: 100%; border-radius: calc(12px - var(--border-width, 1px)); background: #fff; }
+@keyframes border-orbit { to { transform: rotate(360deg); } }
+
+.news-card { min-width: 0; height: 100%; }
+.news-card-frame { height: 100%; }
+.news-card-surface { display: flex; flex-direction: column; overflow: hidden; }
+.news-card .image-link { position: relative; flex: none; display: block; overflow: hidden; aspect-ratio: 16 / 10; background: #e8eddf; }
+.news-card .image-link img { display: block; width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; transition: transform 300ms cubic-bezier(.22,1,.36,1); }
+.news-category { position: absolute; left: 16px; bottom: 15px; background: #fafaf6; color: #173e32; padding: 5px 10px; border: 1px solid #dce2d8; border-radius: 4px; font-size: .65rem; font-weight: 600; max-width: calc(100% - 32px); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.news-card-body { display: flex; flex-direction: column; flex: 1; min-width: 0; padding: 23px 23px 18px; }
+.news-card-body>time { display: block; font-size: .71rem; color: #647068; margin-bottom: 12px; }
+.news-card .news-card-body h3 { font-size: 1.12rem; line-height: 1.55; font-weight: 600; margin: 0 0 12px; letter-spacing: -.025em; }
+.news-card h3 a { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; min-height: 3.1em; }
+.news-card h3 a:hover { color: #4f6d40; }
+.news-card .news-card-body>p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; font-size: .82rem; line-height: 1.8; color: #647068; margin: 0 0 22px; }
+.news-card-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding-top: 15px; margin-top: auto; border-top: 1px solid #e5e9df; }
+.news-card-footer>small { font-size: .6rem; line-height: 1.6; color: #6b7463; }
+.news-readmore { display: inline-flex; align-items: center; gap: 5px; font-size: .7rem; font-weight: 600; color: #173e32; }
+.news-readmore svg { transition: transform 200ms; }
+.news-card:focus-within .news-readmore svg,.news-card:hover .news-readmore svg { transform: translate(2px,-2px); }
+.news-card:focus-within>.animated-border { outline: 2px solid #8b9e74; outline-offset: 3px; }
+.news-grid { align-items: stretch; }
+
+/* Gallery gets a regular photo ratio and a bounded caption, no animated layer. */
+.public-main .album-tile { border: 1px solid #d5ddce; border-radius: 10px; overflow: hidden; background: #fff; }
+.public-main .album-tile>img { width: 100%; height: auto; aspect-ratio: 16 / 10; border-radius: 0; object-fit: cover; }
+.public-main .album-tile>div { padding: 19px 22px 22px; background: #fff; }
+.public-main .album-tile h3 { font-size: 1.1rem; font-weight: 600; }
+.public-main .album-tile h3 svg { flex-shrink: 0; }
+.home-gallery .album-preview { grid-template-columns: 1.1fr 1fr; gap: 28px; }
+.public-main .album-preview { align-items: start; }
+.home-gallery .album-tile:nth-child(2) { margin-top: 32px; margin-left: 0; }
+.home-gallery .album-tile:nth-child(2)>img { height: auto; }
+.home-gallery .album-tile:hover img { transform: scale(1.025); }
+.home-editorial .welcome-grid { border: 1px solid #d1dac7; border-radius: 10px; }
+.history-aside { align-self: start; border: 1px solid #d9dfd0; border-radius: 8px; padding: 26px; }
+.public-main .official-card { border: 1px solid #d9e0d2; border-radius: 8px; overflow: hidden; background: #fff; padding: 0 20px 5px; }
+.public-main .official-card .official-avatar { margin-inline: -20px; }
+.public-main .bpd-list>div { border-radius: 7px; background: #fff; }
+.public-main .service-note { border: 1px solid #d4ddca; border-radius: 10px; }
+.public-main .data-stats { border-radius: 8px; overflow: hidden; }
+
+@media (max-width: 1150px) {
+  .news-card-body { padding: 19px 18px 17px; }
+  .news-card .news-card-body h3 { font-size: 1.04rem; }
+}
+@media (max-width: 900px) {
+  .news-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .history-aside { padding: 22px; }
+}
+@media (max-width: 640px) {
+  .news-grid { grid-template-columns: 1fr; }
+  .news-card-body { padding: 21px 21px 18px; }
+  .news-card .news-card-body h3 { font-size: 1.12rem; }
+  .news-card .image-link { aspect-ratio: 16 / 9; }
+  .news-card .news-card-body>p { font-size: .84rem; }
+  .news-card-footer>small { font-size: .6rem; }
+  .home-gallery .album-preview { grid-template-columns: 1fr; gap: 23px; }
+  .home-gallery .album-tile:nth-child(2) { margin-top: 0; }
+  .public-main .album-tile>img { aspect-ratio: 16 / 9; }
+  .public-main .album-tile>div { padding: 17px 19px 20px; }
+  .history-aside { gap: 6px 18px; padding: 22px 20px; }
+  .public-main .official-card { padding-inline: 14px; }
+  .public-main .official-card .official-avatar { margin-inline: -14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animated-border>.animated-border__light { animation: none; transform: rotate(35deg); }
+  .news-card .image-link img,.home-gallery .album-tile:hover img,.news-readmore svg { transition: none; transform: none; }
+}
+@media (forced-colors: active) {
+  .animated-border { border: 1px solid CanvasText; }
+  .animated-border__light { display: none; }
+}

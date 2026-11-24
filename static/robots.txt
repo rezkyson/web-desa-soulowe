@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /admin
+
+# Domain dan URL sitemap final ditetapkan sebelum rilis produksi.
