@@ -45,6 +45,46 @@
 .news-card:focus-within>.animated-border { outline: 2px solid #8b9e74; outline-offset: 3px; }
 .news-grid { align-items: stretch; }
 
+/* Album detail photos. The img elements carry width/height attributes for
+   layout stability, so every rule here must set height explicitly, otherwise
+   the HTML attribute wins and forces a tall crop on narrow screens. */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.photo-grid button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: #e7ecdf;
+  overflow: hidden;
+  border-radius: 10px;
+  aspect-ratio: 4 / 3;
+}
+.photo-grid img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: cover;
+  transition: transform 320ms cubic-bezier(.22, 1, .36, 1);
+}
+.photo-grid button:hover img { transform: scale(1.025); }
+.photo-grid button:focus-visible { outline: 2px solid var(--leaf); outline-offset: 3px; }
+
+/* Two balanced columns on phones beat three cramped ones. The ratio stays 4:3
+   so a wide landscape photo is not cropped down to a square. */
+@media (max-width: 640px) {
+  .photo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .photo-grid button { border-radius: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-grid img { transition: none; }
+  .photo-grid button:hover img { transform: none; }
+}
+
 /* Gallery gets a regular photo ratio and a bounded caption, no animated layer. */
 .public-main .album-tile { border: 1px solid #d5ddce; border-radius: 10px; overflow: hidden; background: #fff; }
 .public-main .album-tile>img { width: 100%; height: auto; aspect-ratio: 16 / 10; border-radius: 0; object-fit: cover; }

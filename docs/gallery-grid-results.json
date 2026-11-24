@@ -1,0 +1,12 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "checkedAt": "2026-11-24T06:37:51.711Z",
+  "browser": "Chromium",
+  "checks": [
+    "390px: 2 columns, every frame 170x128, ratio 4:3",
+    "320/390/768/1440px: no overflow, 2 then 3 columns, even heights",
+    "landscape photos keep a usable crop",
+    "keyboard opens the lightbox and the full photo is not distorted"
+  ],
+  "errors": []
+}
