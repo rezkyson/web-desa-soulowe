@@ -11,7 +11,11 @@
     "test:smoke": "node scripts/smoke.mjs",
     "test:motion": "node scripts/motion-smoke.mjs",
     "test:map": "node scripts/map-smoke.mjs",
-    "test:borders": "node scripts/border-smoke.mjs"
+    "test:borders": "node scripts/border-smoke.mjs",
+    "test:gallery": "node scripts/gallery-grid.mjs",
+    "test:menu": "node scripts/mobile-menu.mjs",
+    "test:touch": "node scripts/touch-targets.mjs",
+    "test:sql": "node scripts/sql-check.mjs"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^6.1.0",

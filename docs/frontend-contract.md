@@ -75,3 +75,26 @@ Kode HTTP: 200/201 berhasil; 400/422 validasi; 401 tanpa sesi; 403 bukan operato
 ## Handoff SEO dan deployment
 
 Frontend memuat title/description/OG, favicon, route 404, robots, serta kerangka sitemap. Integrasi harus mengisi sitemap dinamis, URL OG absolut/canonical domain resmi, dan status HTTP 404 detail yang tidak ditemukan berdasarkan database. Domain belum ditetapkan. Admin selalu noindex dan dikeluarkan dari sitemap.
+
+## Pembaruan Fase 2 (25 November 2026): kontrak sudah menjadi skema nyata
+
+BE-01 selesai. Rancangan di atas diterjemahkan menjadi migration yang dapat dijalankan, dengan beberapa perbedaan yang disengaja:
+
+| Rancangan awal | Skema nyata | Alasan |
+|---|---|---|
+| ID string UUID | `uuid` dengan `gen_random_uuid()` | Konsisten dengan Supabase dan menghindari tabrakan |
+| `tahun` bebas | `check (year = 2026)` pada `statistics` dan `financial_data` | MVP hanya 2026, ditegakkan database bukan hanya UI |
+| Nilai tidak tersedia | `value numeric` nullable, tanpa default | `null` tetap berbeda dari `0`, sesuai kontrak |
+| Satuan bebas | `check (unit in (...))` per tabel | Mencegah satuan karangan seperti "jiwa2" |
+| Foto unggulan album | Trigger `assert_album_cover_belongs` | Foreign key biasa tidak bisa menyatakan syarat lintas tabel |
+| Urutan tampil | `display_order integer` | Dipertahankan, diindeks bersama kategori |
+| Nama tabel `bpd_members` | Sama, ditambah unique `(name, role)` | Seed aman dijalankan ulang |
+
+Tambahan yang tidak ada di rancangan awal:
+
+- Tabel `admin_users` sebagai daftar operator eksplisit (BE-10). Tanpa baris di sini, semua operasi tulis ditolak RLS meski sesi valid.
+- Fungsi `public.is_operator()` ber-`security definer` agar policy tabel lain bisa memeriksa keanggotaan operator tanpa membuka isi `admin_users` ke klien.
+- Trigger `_touch_updated_at()` pada setiap tabel yang punya `updated_at`.
+- Bucket Storage `media` dengan batas 5 MB dan whitelist MIME yang sama dengan validasi UI.
+
+Verifikasi struktur: `bun run test:sql` (9 pemeriksaan). Ini pemeriksaan statis, bukan pengganti eksekusi SQL sungguhan. Cara menjalankan: `docs/backend-setup.md`.

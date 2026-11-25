@@ -2,8 +2,8 @@
 
 **Acuan:** [`prd.md`](./prd.md), versi 1.0 — Final untuk MVP  
 **Tanggal penyusunan:** 21 November 2026  
-**Status proyek:** Fase 1 selesai beserta seluruh revisi review sampai 24 November 2026; menunggu penerimaan pengguna, backend belum diizinkan  
-**Fase aktif:** Gerbang Fase 1 (G1-01 sampai G1-03)
+**Status proyek:** Fase 1 diterima pengguna 25 November 2026; Fase 2 (Backend) diizinkan dan sedang berjalan  
+**Fase aktif:** Fase 2 — Backend Development (terblokir menunggu akses Supabase development)
 
 ## 1. Tujuan dan Urutan Pengerjaan
 
@@ -59,8 +59,8 @@ Fase 5: Deploy
 
 | Fase | Status pekerjaan | Persetujuan mulai | Persetujuan hasil |
 |---|---|---|---|
-| 1 — Frontend | Selesai, termasuk revisi review 22 sampai 24 November 2026; laporan `docs/phase-1-report.md` | Disetujui pengguna, 21 November 2026 | Menunggu review dan konfirmasi |
-| 2 — Backend | Belum dimulai | Menunggu hasil Fase 1 dan izin pengguna | Belum diminta |
+| 1 — Frontend | Selesai dan diterima pengguna; termasuk revisi review 22 sampai 25 November 2026; laporan `docs/phase-1-report.md` | Disetujui pengguna, 21 November 2026 | Diterima 25 November 2026 |
+| 2 — Backend | Berjalan; terblokir menunggu akses Supabase development | Diizinkan pengguna, 25 November 2026 | Belum diminta |
 | 3 — Integration | Belum dimulai | Menunggu hasil Fase 2 dan izin pengguna | Belum diminta |
 | 4 — Testing | Belum dimulai | Menunggu hasil Fase 3 dan izin pengguna | Belum diminta |
 | 5 — Deploy | Belum dimulai | Menunggu hasil Fase 4 dan izin pengguna | Belum diminta |
@@ -138,6 +138,7 @@ Revisi berikut diminta pengguna setelah FE-39 dan dikerjakan masih di dalam Fase
 - [x] FE-42 — Perbaiki navigasi mobile: tautan putih di atas panel terang pada beranda mode overlay, dan panel tembus pandang selama animasi buka. Tambah `Escape`, pengembalian fokus, `aria-controls`, dan panel bergulir di layar pendek. Bukti: `scripts/mobile-menu.mjs`, 13 pemeriksaan, `docs/mobile-menu-results.json`.
 - [x] FE-43 — Perbaiki grid foto halaman detail album: atribut `height` pada `img` menang atas `aspect-ratio` sehingga setiap foto dipaksa 700 px tinggi dalam kolom 169 px. Grid kini 4:3 seragam, 2 kolom di ponsel, 3 kolom di layar lebar. Bukti: `scripts/gallery-grid.mjs`, 4 pemeriksaan, `docs/gallery-grid-results.json`.
 - [x] FE-44 — Repositori disiapkan untuk publikasi: `.gitattributes` untuk line ending, `docs/screenshots/` dan dokumen kerja internal dikecualikan, gambar referensi klien dipindah keluar dari `public/`. Repo publik: `github.com/rezkyson/web-desa-soulowe`.
+- [x] FE-45 — Target sentuh diperbesar ke minimal 44 px pada perangkat sentuh (`pointer: coarse`) untuk dot slideshow, tombol ikon, tautan teks, breadcrumb, daftar isi, tautan footer, filter tab, kontrol zoom, dan tombol tutup popup peta. Ukuran font dan tampilan desktop tidak berubah. Bukti: `scripts/touch-targets.mjs`, 5 pemeriksaan, `docs/touch-target-results.json`.
 
 **Catatan revisi:** Seluruh revisi di atas adalah penyempurnaan tampilan dan perbaikan bug pada frontend yang sudah ada. Tidak ada penambahan modul, perubahan scope, atau klaim fungsi backend. Deploy Vercel sengaja ditunda atas keputusan pengguna sampai perbaikan frontend selesai.
 
@@ -145,13 +146,13 @@ Revisi berikut diminta pengguna setelah FE-39 dan dikerjakan masih di dalam Fase
 
 **Kriteria selesai:** Seluruh halaman publik/admin dapat direview dengan mock; alur UI utama berjalan; tampilan responsif dan state penting tersedia; hasil check/build serta pemeriksaan visual dicatat. Penyimpanan, login, dan upload belum diklaim berfungsi nyata.
 
-**Verifikasi terakhir (24 November 2026):** `bun run check` 0 error dan 0 warning; production build lulus; smoke 36, motion 7, borders 9, map 4, hero-slides 12, mobile-menu 13, gallery-grid 4, click-through 30 kontrol dengan 0 error konsol.
+**Verifikasi terakhir (25 November 2026):** `bun run check` 0 error dan 0 warning; production build lulus; smoke 36, motion 7, borders 9, map 4, hero-slides 12, mobile-menu 13, gallery-grid 4, touch-targets 5, click-through 30 kontrol dengan 0 error konsol.
 
 ### Gerbang Fase 1 → Fase 2
 
-- [ ] G1-01 — Pengguna meninjau frontend dan revisi yang diminta sudah diselesaikan.
-- [ ] G1-02 — Pengguna menerima hasil Fase 1.
-- [ ] G1-03 — Pengguna secara eksplisit mengizinkan **Fase 2 — Backend Development**.
+- [x] G1-01 — Pengguna meninjau frontend dan revisi yang diminta sudah diselesaikan.
+- [x] G1-02 — Pengguna menerima hasil Fase 1.
+- [x] G1-03 — Pengguna secara eksplisit mengizinkan **Fase 2 — Backend Development**.
 
 **STOP: Jangan mulai backend sebelum G1-03 disetujui.**
 
@@ -165,13 +166,13 @@ Revisi berikut diminta pengguna setelah FE-39 dan dikerjakan masih di dalam Fase
 
 ### 2.1 Database dan data awal
 
-- [ ] BE-01 — Finalisasi kontrak API/data berdasarkan frontend yang disetujui; catat perbedaan dari rancangan awal sebelum mengubah kontrak.
+- [x] BE-01 — Finalisasi kontrak API/data berdasarkan frontend yang disetujui; catat perbedaan dari rancangan awal sebelum mengubah kontrak.
 - [ ] BE-02 — Siapkan project/lingkungan Supabase development dan `.env.example` tanpa secret; pisahkan konfigurasi server dan public.
-- [ ] BE-03 — Buat migration untuk `site_settings`, `principal_profile`, `village_officials`, `bpd_members`, `statistics`, `facilities`, `financial_data`, `news`, `news_images`, `gallery_albums`, `gallery_images`, `service_contacts`, dan `media_assets`.
-- [ ] BE-04 — Terapkan foreign key, slug unik, urutan tampil, timestamp relevan, validasi nilai, dan kolom tahun statistik/keuangan yang dibatasi 2026 pada MVP.
-- [ ] BE-05 — Bedakan nilai tidak tersedia (`null`/penanda sumber) dari nol; dukung satuan jiwa, KK, RTM, orang, unit, dan km termasuk desimal tanpa mengubah makna data.
-- [ ] BE-06 — Buat seed yang dapat dijalankan ulang dengan aman untuk data PRD; pisahkan data contoh berita/album/media dari data sumber dan jangan menimpa data pengguna.
-- [ ] BE-07 — Verifikasi angka seed terhadap PRD/dokumen, termasuk statistik, perangkat, BPD, fasilitas, dan keuangan; jangan membuat total turunan atau koreksi sumber tanpa persetujuan.
+- [x] BE-03 — Buat migration untuk `site_settings`, `principal_profile`, `village_officials`, `bpd_members`, `statistics`, `facilities`, `financial_data`, `news`, `news_images`, `gallery_albums`, `gallery_images`, `service_contacts`, dan `media_assets`.
+- [x] BE-04 — Terapkan foreign key, slug unik, urutan tampil, timestamp relevan, validasi nilai, dan kolom tahun statistik/keuangan yang dibatasi 2026 pada MVP.
+- [x] BE-05 — Bedakan nilai tidak tersedia (`null`/penanda sumber) dari nol; dukung satuan jiwa, KK, RTM, orang, unit, dan km termasuk desimal tanpa mengubah makna data.
+- [x] BE-06 — Buat seed yang dapat dijalankan ulang dengan aman untuk data PRD; pisahkan data contoh berita/album/media dari data sumber dan jangan menimpa data pengguna.
+- [x] BE-07 — Verifikasi angka seed terhadap PRD/dokumen, termasuk statistik, perangkat, BPD, fasilitas, dan keuangan; jangan membuat total turunan atau koreksi sumber tanpa persetujuan.
 
 ### 2.2 Auth dan otorisasi
 
@@ -406,6 +407,8 @@ Pekerjaan berhenti sampai ada konfirmasi pengguna.
 | 24 November 2026 | Repositori publik dan perbaikan tampilan | Pengguna meminta `DESIGN.md` dan `TASK.md` masuk `.gitignore`, lalu repo publik dibuat dan di-push | Screenshot tes dan dokumen kerja dikecualikan; referensi klien keluar dari `public/`; FE-44 |
 | 24 November 2026 | Perbaikan navbar mobile dan grid galeri | Pengguna melaporkan teks menu tidak terbaca di mobile, lalu grid foto detail album tidak rapi | Dua bug nyata diperbaiki dan dikunci dengan tes regresi; FE-42 dan FE-43 |
 | 24 November 2026 | Deploy Vercel ditunda | Pengguna menyatakan masih ingin memperbaiki frontend lebih dulu | Tetap Fase 1; adapter Vercel dan deploy belum dikerjakan |
+| 25 November 2026 | Target sentuh 44px | Pengguna menyetujui usulan perbaikan target sentuh | FE-45 selesai dan terverifikasi; tetap Fase 1 |
+| 25 November 2026 | **Fase 1 diterima, Fase 2 diizinkan** | Pengguna menyatakan "oke lanjut" setelah laporan target sentuh | G1-01, G1-02, G1-03 disetujui. Fase 2 dimulai dan terblokir menunggu akses Supabase development |
 
 Tambahkan catatan saat persetujuan benar-benar diterima, bukan berdasarkan asumsi.
 
