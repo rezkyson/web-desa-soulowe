@@ -1,0 +1,10 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "checkedAt": "2026-11-25T13:48:30.801Z",
+  "mode": "unconfigured",
+  "checks": [
+    "10 endpoints fail with 503 and no leaked config, as expected without .env",
+    "detail route also fails honestly"
+  ],
+  "errors": []
+}

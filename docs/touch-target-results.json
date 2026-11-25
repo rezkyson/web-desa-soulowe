@@ -1,6 +1,6 @@
 {
   "base": "http://127.0.0.1:4173",
-  "checkedAt": "2026-11-25T03:36:13.853Z",
+  "checkedAt": "2026-11-25T14:01:01.041Z",
   "browser": "Chromium",
   "device": "Pixel 7",
   "checks": [
@@ -8,7 +8,7 @@
     "menu toggle is 44x44",
     "4 slideshow dots: 44px tall and each centre hits its own dot",
     "320/390/768/1440px: no horizontal overflow",
-    "hero card intact (photo 234px, body 160px)"
+    "hero card intact (photo 242px, body 153px)"
   ],
   "errors": []
 }

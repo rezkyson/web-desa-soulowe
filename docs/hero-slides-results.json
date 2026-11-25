@@ -1,10 +1,10 @@
 {
   "base": "http://127.0.0.1:4173",
-  "checkedAt": "2026-11-25T03:38:24.675Z",
+  "checkedAt": "2026-11-25T14:03:58.007Z",
   "browser": "Chromium",
   "checks": [
     "4 unique slides sourced from the newest albums",
-    "random order confirmed across loads (6 distinct sequences in 6)",
+    "random order confirmed across loads (5 distinct sequences in 6)",
     "exactly one active frame",
     "autoplay advances after the interval",
     "no play/pause control, the slideshow is not visitor-stopped",
@@ -18,9 +18,9 @@
   ],
   "errors": [],
   "sources": [
-    "/images/fields.jpg",
-    "/images/field.jpg",
     "/images/landscape.jpg",
-    "/images/seedlings.jpg"
+    "/images/seedlings.jpg",
+    "/images/fields.jpg",
+    "/images/field.jpg"
   ]
 }

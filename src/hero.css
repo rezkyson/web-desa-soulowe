@@ -300,7 +300,6 @@
     color: var(--ink-forest);
   }
 }
-}
 
 @media (max-width: 640px) {
   .hero-shell { margin: 0; border-radius: 0 0 18px 18px; }

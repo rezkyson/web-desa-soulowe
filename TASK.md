@@ -178,15 +178,15 @@ Revisi berikut diminta pengguna setelah FE-39 dan dikerjakan masih di dalam Fase
 
 - [ ] BE-08 — Konfigurasikan Supabase Auth untuk satu akun operator yang dibuat secara terkontrol; nonaktifkan registrasi publik dan tidak menyediakan manajemen multi-user.
 - [ ] BE-09 — Implementasikan login email/password, logout, perubahan password yang aman, serta validasi/refresh session melalui Supabase SSR. Jangan menambahkan login username kecuali pemetaan yang diperlukan telah disepakati.
-- [ ] BE-10 — Tetapkan identitas admin secara eksplisit (misalnya ID akun operator yang diizinkan); setiap endpoint mutasi harus memeriksa admin, bukan sekadar keberadaan sesi.
-- [ ] BE-11 — Terapkan RLS database dan policy Storage: publik hanya membaca konten publik; tulis hanya akun operator yang diizinkan; informasi akun tidak terbuka ke publik.
-- [ ] BE-12 — Pastikan service role key hanya di server, tidak dipakai untuk melewati otorisasi request pengguna, dan tidak tampil di error/log/client bundle.
+- [x] BE-10 — Tetapkan identitas admin secara eksplisit (misalnya ID akun operator yang diizinkan); setiap endpoint mutasi harus memeriksa admin, bukan sekadar keberadaan sesi.
+- [x] BE-11 — Terapkan RLS database dan policy Storage: publik hanya membaca konten publik; tulis hanya akun operator yang diizinkan; informasi akun tidak terbuka ke publik.
+- [x] BE-12 — Pastikan service role key hanya di server, tidak dipakai untuk melewati otorisasi request pengguna, dan tidak tampil di error/log/client bundle.
 
 ### 2.3 API ElysiaJS
 
-- [ ] BE-13 — Pasang Elysia di endpoint SvelteKit dengan Web Request/Response, kompatibel runtime Vercel, tanpa server production `app.listen()`.
+- [x] BE-13 — Pasang Elysia di endpoint SvelteKit dengan Web Request/Response, kompatibel runtime Vercel, tanpa server production `app.listen()`.
 - [ ] BE-14 — Implementasikan validasi request, respons/error konsisten, status HTTP, sanitasi isi berita, proteksi request mutasi lintas situs yang sesuai, serta penanganan error tanpa detail sensitif.
-- [ ] BE-15 — Buat operasi baca publik untuk pengaturan/media aktif, Kepala Desa, pemerintahan/BPD, statistik, fasilitas, keuangan, WhatsApp, berita, dan galeri; detail berita/album memakai slug.
+- [x] BE-15 — Buat operasi baca publik untuk pengaturan/media aktif, Kepala Desa, pemerintahan/BPD, statistik, fasilitas, keuangan, WhatsApp, berita, dan galeri; detail berita/album memakai slug.
 - [ ] BE-16 — Buat operasi admin untuk update profil Kepala Desa, konfigurasi media aktif, WhatsApp, serta statistik 2026.
 - [ ] BE-17 — Buat CRUD perangkat desa/BPD, fasilitas, dan item keuangan 2026 sesuai PRD.
 - [ ] BE-18 — Buat CRUD berita beserta foto tambahan; pembuatan langsung terbit, slug unik, dan tidak ada endpoint draft/approval/sembunyikan.
@@ -409,6 +409,8 @@ Pekerjaan berhenti sampai ada konfirmasi pengguna.
 | 24 November 2026 | Deploy Vercel ditunda | Pengguna menyatakan masih ingin memperbaiki frontend lebih dulu | Tetap Fase 1; adapter Vercel dan deploy belum dikerjakan |
 | 25 November 2026 | Target sentuh 44px | Pengguna menyetujui usulan perbaikan target sentuh | FE-45 selesai dan terverifikasi; tetap Fase 1 |
 | 25 November 2026 | **Fase 1 diterima, Fase 2 diizinkan** | Pengguna menyatakan "oke lanjut" setelah laporan target sentuh | G1-01, G1-02, G1-03 disetujui. Fase 2 dimulai dan terblokir menunggu akses Supabase development |
+| 25 November 2026 | Migration dijalankan pengguna | Pengguna: "aku sudah jalankan 3 migrasi di sql editor" | Skema, RLS, dan seed ada di database; belum diverifikasi isinya, menunggu `supabase/verify.sql` |
+| 25 November 2026 | Akun operator dibuat pengguna | Pengguna memilih "Belum, saya buat sekarang" | Menunggu konfirmasi akun terdaftar di `admin_users` sebelum endpoint tulis diuji |
 
 Tambahkan catatan saat persetujuan benar-benar diterima, bukan berdasarkan asumsi.
 
