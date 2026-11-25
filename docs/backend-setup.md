@@ -13,43 +13,66 @@ Tidak ada nilai secret yang perlu dikirim ke siapa pun.
 
 ## Urutan menjalankan
 
-Jalankan **berurutan**. Migration kedua bergantung pada tabel dari yang pertama.
+Ada **tiga file**. Jalankan berurutan, jangan dibalik. Migration kedua
+membutuhkan tabel dari yang pertama, dan seed membutuhkan keduanya.
 
-### 1. `20261125120000_schema.sql`
+| Urutan | File | Isi |
+|---|---|---|
+| 1 | `supabase/migrations/20261125120000_schema.sql` | 14 tabel, constraint, index, trigger |
+| 2 | `supabase/migrations/20261125120100_rls.sql` | RLS, policy, `admin_users`, bucket Storage |
+| 3 | `supabase/seed.sql` | Data awal dari dokumen profil desa |
 
-Membuat seluruh tabel, constraint, index, trigger, dan helper `touch_updated_at`.
-
-### 2. `20261125120100_rls.sql`
-
-Mengaktifkan RLS di semua tabel konten, membuat policy baca publik dan tulis
-operator, membuat tabel `admin_users`, serta bucket Storage `media`.
-
-### 3. `seed.sql`
-
-Mengisi data awal dari dokumen profil desa. Aman dijalankan berulang: semua
-insert memakai `on conflict do nothing` sehingga data operator tidak tertimpa.
+Nama file memakai awalan tanggal supaya urutannya jelas dan cocok dengan
+Supabase CLI (`supabase db push` menjalankan migration sesuai nama).
 
 ## Lewat SQL Editor
 
-1. Buka project, masuk ke **SQL Editor**.
-2. Tempel isi `20261125120000_schema.sql`, klik **Run**. Pastikan tidak ada error.
-3. Ulangi untuk `20261125120100_rls.sql`.
-4. Ulangi untuk `seed.sql`.
-5. Periksa: **Table Editor** harus menampilkan 14 tabel, dan `storage.buckets`
-   berisi bucket `media`.
+Untuk setiap file:
 
-## Lewat Supabase CLI
+1. Buka project, masuk ke **SQL Editor**.
+2. Klik **New query**.
+3. Buka file di editor teks, **salin seluruh isinya**, tempel ke SQL Editor.
+4. Klik **Run** (atau Ctrl+Enter).
+5. Pastikan muncul "Success. No rows returned" dan tidak ada error merah.
+
+Ulangi untuk file kedua, lalu ketiga. Jangan menempel ketiga file sekaligus
+dalam satu query: kalau satu bagian gagal, Anda sulit tahu bagian mana.
+
+### Kalau ada error di tengah jalan
+
+- File 1 (`schema`) **tidak** aman diulang. Kalau gagal di tengah, sebagian
+  tabel sudah terbuat. Hapus dulu lewat SQL Editor:
+
+  ```sql
+  drop schema public cascade;
+  create schema public;
+  grant usage on schema public to anon, authenticated, service_role;
+  grant all on schema public to postgres;
+  ```
+
+  Lalu jalankan ulang file 1 dari awal. Jangan lakukan ini kalau sudah ada data
+  yang ingin dipertahankan.
+
+- File 2 (`rls`) **aman diulang**: policy dihapus lalu dibuat ulang.
+- File 3 (`seed`) **aman diulang**: semua insert memakai `on conflict do nothing`.
+
+## Lewat Supabase CLI (alternatif)
 
 ```sh
 supabase link --project-ref <project-ref>
 supabase db push
 ```
 
-`seed.sql` tidak dijalankan otomatis oleh `db push`. Jalankan manual:
+`db push` hanya menjalankan folder `migrations/`. `seed.sql` dijalankan manual:
 
 ```sh
 psql "$DATABASE_URL" -f supabase/seed.sql
 ```
+
+## Setelah ketiga file berhasil
+
+Lanjut ke bagian **Membuat akun operator** di bawah. Tanpa akun terdaftar,
+semua operasi tulis akan ditolak RLS, dan itu memang perilaku yang benar.
 
 ## Membuat akun operator
 

@@ -18,7 +18,7 @@ values
   ('images/field.jpg',     'image/jpeg', 163237, 'Ilustrasi lahan pertanian', true),
   ('images/fields.jpg',    'image/jpeg', 513174, 'Ilustrasi hasil panen sayur', true),
   ('images/seedlings.jpg', 'image/jpeg', 501767, 'Ilustrasi bibit tanaman', true),
-  ('images/logo.png',      'image/png',  132000, 'Lambang Kabupaten Sigi', false)
+  ('images/logo.png',      'image/png',  133559, 'Lambang Kabupaten Sigi', false)
 on conflict (storage_path) do nothing;
 
 -- ---------------------------------------------------------------------------

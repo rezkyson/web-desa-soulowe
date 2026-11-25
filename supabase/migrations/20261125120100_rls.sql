@@ -42,10 +42,13 @@ grant execute on function public.is_operator() to anon, authenticated;
 
 -- ---------------------------------------------------------------------------
 -- Tabel konten: baca publik, tulis operator.
+-- Policy dihapus lebih dulu agar file ini aman dijalankan ulang bila sebelumnya
+-- gagal di tengah jalan (misalnya karena policy storage sudah ada).
 -- ---------------------------------------------------------------------------
 do $$
 declare
   t text;
+  p record;
   content_tables text[] := array[
     'media_assets', 'site_settings', 'principal_profile', 'service_contacts',
     'village_officials', 'bpd_members', 'statistics', 'facilities',
@@ -54,6 +57,13 @@ declare
 begin
   foreach t in array content_tables loop
     execute format('alter table public.%I enable row level security', t);
+
+    for p in
+      select policyname from pg_policies
+      where schemaname = 'public' and tablename = t
+    loop
+      execute format('drop policy %I on public.%I', p.policyname, t);
+    end loop;
 
     execute format(
       'create policy %I on public.%I for select to anon, authenticated using (true)',
@@ -91,6 +101,12 @@ on conflict (id) do update
   set public = excluded.public,
       file_size_limit = excluded.file_size_limit,
       allowed_mime_types = excluded.allowed_mime_types;
+
+-- Aman dijalankan ulang: buang policy storage bernama sama lebih dulu.
+drop policy if exists media_public_read on storage.objects;
+drop policy if exists media_operator_insert on storage.objects;
+drop policy if exists media_operator_update on storage.objects;
+drop policy if exists media_operator_delete on storage.objects;
 
 create policy media_public_read
   on storage.objects for select to anon, authenticated
