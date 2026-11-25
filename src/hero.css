@@ -154,7 +154,7 @@
   color: var(--signal);
   font-size: 0.78rem;
   font-weight: 600;
-  min-height: 32px;
+  min-height: 44px;
 }
 .hero-card-link:hover { color: #c8e6ab; }
 
@@ -188,8 +188,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  /* 44px is the smallest comfortable thumb target. The visible ring is drawn
+     inset so the icon keeps its 38px proportions inside a bigger hit area. */
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.24);
   color: #e6efdf;

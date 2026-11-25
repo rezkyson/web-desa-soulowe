@@ -1,6 +1,6 @@
 {
   "base": "http://127.0.0.1:4173",
-  "checkedAt": "2026-11-24T06:40:35.683Z",
+  "checkedAt": "2026-11-25T03:38:31.319Z",
   "browser": "Chromium",
   "checks": [
     "panel stays fully opaque while the open animation runs",

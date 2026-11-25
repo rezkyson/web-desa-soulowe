@@ -271,7 +271,7 @@
   .gallery-tile img, .gallery-tile:nth-child(2) img { aspect-ratio: 16 / 9; }
   .info-panel { padding: 44px 0; }
   .info-panel h2 { font-size: 1.9rem; }
-  .info-panel-links a { padding: 17px 2px; gap: 14px; }
+  .info-panel-links a { padding: 17px 2px; gap: 14px; min-height: 44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

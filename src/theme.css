@@ -77,8 +77,43 @@ strong { color: var(--ink-forest); }
 .icon-button { border-radius: var(--radius-control); }
 .icon-button:hover { background: color-mix(in srgb, var(--ink-forest) 7%, transparent); }
 
+/* The menu toggle and other icon buttons must clear 44px on touch screens. */
+@media (pointer: coarse) {
+  .icon-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .menu-toggle { min-width: 44px; min-height: 44px; }
+
+  /* Breadcrumb, table of contents, card "read more" links and the news row
+     headings are all small type. On touch screens they get a 44px row from
+     padding so the text size stays as designed. */
+  .breadcrumb a,
+  .breadcrumb span { display: inline-flex; align-items: center; min-height: 44px; }
+  .contents > a { min-height: 44px; }
+  .news-readmore { min-height: 44px; }
+  .news-row h3 a { min-height: 44px; align-content: center; }
+  .news-row .row-body > a { min-height: 44px; display: flex; align-items: center; }
+}
+
 .text-link { color: var(--leaf); font-weight: 600; }
 .text-link:hover { color: var(--ink-forest); }
+
+/* Touch targets: 44px minimum on coarse pointers. Text stays the same size and
+   the extra height comes from padding, so the visual rhythm is unchanged. */
+@media (pointer: coarse) {
+  .text-link,
+  .public-main .section-top .text-link,
+  .story-aside .text-link,
+  .feature-body .text-link,
+  .hero-card-link,
+  .office-map-footer a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .hero-card-link { margin-top: 6px; }
+}
 
 .eyebrow {
   font-family: var(--font-body);
@@ -160,6 +195,16 @@ label { font-family: var(--font-body); }
 .footer-grid p, .footer-grid > div > a:not(.brand) { color: var(--text-soft); }
 .footer-grid > div > a:hover { color: var(--leaf); }
 .footer-bottom { color: var(--text-soft); border-color: var(--line); }
+
+/* Footer links are small type by design; on touch screens they still need a
+   thumb-sized row, so the height comes from padding rather than font size. */
+@media (pointer: coarse) {
+  .footer-grid > div > a:not(.brand) {
+    min-height: 44px;
+    margin-bottom: 0;
+  }
+  .footer-bottom a { min-height: 44px; display: inline-flex; align-items: center; }
+}
 
 /* Inner page header: short dark band instead of the old pale block. */
 .page-heading {

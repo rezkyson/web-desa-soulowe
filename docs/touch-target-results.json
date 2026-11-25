@@ -1,0 +1,14 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "checkedAt": "2026-11-25T03:36:13.853Z",
+  "browser": "Chromium",
+  "device": "Pixel 7",
+  "checks": [
+    "11 public pages: every interactive target is at least 44px tall",
+    "menu toggle is 44x44",
+    "4 slideshow dots: 44px tall and each centre hits its own dot",
+    "320/390/768/1440px: no horizontal overflow",
+    "hero card intact (photo 234px, body 160px)"
+  ],
+  "errors": []
+}

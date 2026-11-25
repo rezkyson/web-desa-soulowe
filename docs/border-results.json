@@ -1,6 +1,6 @@
 {
   "base": "http://127.0.0.1:4173",
-  "checkedAt": "2026-11-24T06:39:33.472Z",
+  "checkedAt": "2026-11-25T03:37:35.260Z",
   "browser": "Chromium",
   "checks": [
     "News borders paused below viewport",

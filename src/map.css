@@ -6,7 +6,7 @@
 .office-map-footer>div { display: flex; flex-direction: column; gap: 5px; }
 .office-map-footer strong { font-size: .8rem; font-weight: 600; }
 .office-map-footer small { color: #647068; font-size: .68rem; }
-.office-map-footer a { display: inline-flex; align-items: center; gap: 7px; font-size: .74rem; color: #173e32; font-weight: 600; flex-shrink: 0; min-height: 40px; }
+.office-map-footer a { display: inline-flex; align-items: center; gap: 7px; font-size: .74rem; color: #173e32; font-weight: 600; flex-shrink: 0; min-height: 44px; }
 .office-map-footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .office-map .leaflet-popup-content { margin: 14px 18px; font-size: .8rem; line-height: 1.7; }
 .office-map .leaflet-popup-content p { font-size: .72rem; margin: 5px 0 0; line-height: 1.6; }
@@ -17,3 +17,26 @@
 .office-map-pin>span::after { content: ''; position: absolute; width: 8px; height: 8px; top: 7px; left: 7px; border-radius: 50%; background: #f0efdc; }
 .map-tile-error { padding: 12px 18px; margin: 0; font-size: .73rem; line-height: 1.7; background: #f4efdf; color: #6c603c; }
 @media (max-width: 640px) { .office-map .map-live { height: 310px; }.office-map-footer { flex-direction: column; align-items: flex-start; gap: 6px; padding: 15px 18px; }.office-map-footer a { font-size: .75rem; } }
+
+/* Leaflet ships 26px controls, which are hard to hit with a thumb. */
+@media (pointer: coarse) {
+  .office-map .leaflet-touch .leaflet-bar a,
+  .office-map .leaflet-bar a {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+    font-size: 20px;
+  }
+  /* Leaflet styles this as `.leaflet-container a.leaflet-popup-close-button`,
+     so the selector has to match that shape to win. */
+  .office-map .leaflet-container a.leaflet-popup-close-button {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+    font-size: 22px;
+    padding: 0;
+    text-align: center;
+  }
+  /* Attribution stays small on purpose: it is legally required text, not an
+     action, and 44px would cover the map. It remains reachable and readable. */
+}

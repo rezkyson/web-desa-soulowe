@@ -1,6 +1,6 @@
 {
   "base": "http://127.0.0.1:4173",
-  "checkedAt": "2026-11-24T06:39:05.341Z",
+  "checkedAt": "2026-11-25T03:37:20.302Z",
   "browser": "Chromium",
   "checks": [
     "Hero animation exists and runs once, not a decorative loop",

@@ -183,14 +183,18 @@
     z-index: 1;
     display: flex;
     align-items: center;
-    gap: 2px;
+    /* Overlapping hit areas are fine: each dot still owns its own 44px box. */
+    gap: 0;
   }
   .hero-slide-dot {
     position: relative;
     display: grid;
     place-items: center;
-    width: 22px;
-    height: 22px;
+    /* 44px hit area around a 16px indicator, so it is thumb friendly without
+       looking heavier. Negative margin keeps the row visually compact. */
+    width: 44px;
+    height: 44px;
+    margin: -13px -6px;
     padding: 0;
     border: 0;
     background: none;
@@ -206,10 +210,11 @@
   }
   .hero-slide-dot.is-active::before { background: rgba(255, 255, 255, 0.58); }
   .hero-slide-dot:hover::before { background: rgba(255, 255, 255, 0.82); }
-  .hero-slide-dot:focus-visible { outline: 2px solid #a6d17f; outline-offset: 2px; border-radius: 4px; }
+  .hero-slide-dot:focus-visible { outline: 2px solid #a6d17f; outline-offset: -8px; border-radius: 8px; }
   .hero-slide-fill {
     position: absolute;
-    left: 3px;
+    /* Centred in the 44px hit area, still filling from its left edge. */
+    left: calc(50% - 8px);
     top: calc(50% - 1.5px);
     width: 16px;
     height: 3px;
