@@ -1,11 +1,17 @@
 {
   "base": "http://127.0.0.1:4173",
-  "checkedAt": "2026-11-26T10:20:58.300Z",
-  "mode": "unconfigured",
+  "checkedAt": "2026-11-26T12:13:37.848Z",
+  "mode": "configured",
   "checks": [
-    "10 endpoints fail with 503 and no leaked config, as expected without .env",
-    "detail route also fails honestly",
-    "8 admin endpoints deny anonymous access",
+    "10 public endpoints respond with the documented Result shape",
+    "news list returns 3 items with required fields",
+    "statistics only return 2026 rows with allowed units",
+    "finance has no derived totals, categories are Pendapatan/Belanja",
+    "missing news returns 404 not_found",
+    "album detail returns 3 photos, 1 featured",
+    "public API rejects writes (405) and nothing was stored",
+    "7 admin endpoints deny anonymous access",
+    "logout without a session is harmless, not a server error",
     "wrong credentials are rejected without leaking account existence",
     "no public signup endpoint exists"
   ],

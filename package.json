@@ -16,7 +16,9 @@
     "test:menu": "node scripts/mobile-menu.mjs",
     "test:touch": "node scripts/touch-targets.mjs",
     "test:sql": "node scripts/sql-check.mjs",
-    "test:api": "node scripts/api-contract.mjs"
+    "test:api": "node scripts/api-contract.mjs",
+    "test:upload": "node scripts/upload-rules.mjs",
+    "test:admin": "node scripts/admin-flow.mjs"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^6.1.0",

@@ -121,18 +121,34 @@ if (!configured) {
     checks.push(`album detail returns ${photos.length} photos, ${featured.length} featured`);
   }
 
-  // API publik tidak boleh menerima tulisan.
-  const post = await fetch(base + '/api/public/news', { method: 'POST', body: '{}' });
-  assert([404, 405].includes(post.status), `POST to public API should be rejected, got ${post.status}`);
-  checks.push('public API rejects writes');
+  // API publik tidak boleh menerima tulisan. Dua lapisan bisa menolak:
+  // 404/405 (tidak ada route tulis) atau 403 (route ada, RLS menolak).
+  // Keduanya benar; yang salah adalah 200/201.
+  const post = await fetch(base + '/api/public/news', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ title: 'uji', slug: 'uji', published_on: '2026-01-01' })
+  });
+  assert([403, 404, 405].includes(post.status), `POST to public API should be rejected, got ${post.status}`);
+  assert(![200, 201].includes(post.status), 'public API accepted a write');
+
+  // Pastikan penolakan itu benar-benar terjadi: tidak ada baris 'uji' tersimpan.
+  const afterWrite = await get('/api/public/news');
+  if (afterWrite.status === 200) {
+    assert(
+      !afterWrite.body.data.some(item => item.slug === 'uji'),
+      'a write through the public API actually persisted'
+    );
+  }
+  checks.push(`public API rejects writes (${post.status}) and nothing was stored`);
 }
 
 // Endpoint admin harus menolak tanpa sesi, dalam mode apa pun. Ini berlaku
 // bahkan tanpa .env: yang diuji adalah tidak adanya akses, bukan isi data.
 {
-  const adminRoutes = [
+  // Endpoint yang WAJIB menolak tanpa sesi.
+  const mustDeny = [
     ['GET', '/api/admin/auth/session'],
-    ['POST', '/api/admin/auth/logout'],
     ['GET', '/api/admin/dashboard'],
     ['POST', '/api/admin/officials'],
     ['DELETE', '/api/admin/officials/00000000-0000-0000-0000-000000000000'],
@@ -141,7 +157,7 @@ if (!configured) {
     ['POST', '/api/admin/finance']
   ];
 
-  for (const [method, path] of adminRoutes) {
+  for (const [method, path] of mustDeny) {
     const response = await fetch(base + path, {
       method,
       headers: { 'content-type': 'application/json' },
@@ -159,7 +175,13 @@ if (!configured) {
       `${method} ${path} returned success without a session`
     );
   }
-  checks.push(`${adminRoutes.length} admin endpoints deny anonymous access`);
+  checks.push(`${mustDeny.length} admin endpoints deny anonymous access`);
+
+  // Logout tanpa sesi boleh berhasil: tidak ada yang bisa dibocorkan dan
+  // hasilnya idempoten. Yang penting bukan 500 dan bukan 201.
+  const logout = await fetch(base + '/api/admin/auth/logout', { method: 'POST' });
+  assert([200, 401, 503].includes(logout.status), `logout without session returned ${logout.status}`);
+  checks.push('logout without a session is harmless, not a server error');
 
   // Login dengan kredensial salah tidak boleh berhasil dan tidak boleh
   // membocorkan apakah email terdaftar.

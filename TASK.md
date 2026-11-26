@@ -195,10 +195,10 @@ Revisi berikut diminta pengguna setelah FE-39 dan dikerjakan masih di dalam Fase
 
 ### 2.4 Storage dan pengelolaan media
 
-- [ ] BE-21 — Siapkan Storage dan path `branding/`, `profil/`, `perangkat/`, `berita/`, `galeri/`, `fasilitas/` dengan policy yang sesuai.
-- [ ] BE-22 — Implementasikan upload terotorisasi: batas 5 MB per file, JPG/JPEG/PNG/WebP, pemeriksaan tipe isi file selain ekstensi/MIME deklaratif, dan nama/path aman.
-- [ ] BE-23 — Simpan metadata/referensi media; siapkan optimasi gambar yang kompatibel deployment tanpa mengubah batas file masuk.
-- [ ] BE-24 — Atur penggantian/penghapusan media dan relasi: jangan menghapus file yang masih dipakai konten lain; tangani kegagalan parsial upload, album, dan berita agar referensi tidak rusak.
+- [x] BE-21 — Siapkan Storage dan path `branding/`, `profil/`, `perangkat/`, `berita/`, `galeri/`, `fasilitas/` dengan policy yang sesuai.
+- [x] BE-22 — Implementasikan upload terotorisasi: batas 5 MB per file, JPG/JPEG/PNG/WebP, pemeriksaan tipe isi file selain ekstensi/MIME deklaratif, dan nama/path aman.
+- [x] BE-23 — Simpan metadata/referensi media; siapkan optimasi gambar yang kompatibel deployment tanpa mengubah batas file masuk.
+- [x] BE-24 — Atur penggantian/penghapusan media dan relasi: jangan menghapus file yang masih dipakai konten lain; tangani kegagalan parsial upload, album, dan berita agar referensi tidak rusak.
 
 ### 2.5 Pemeriksaan dan hasil fase
 
