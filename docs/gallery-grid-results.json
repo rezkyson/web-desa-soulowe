@@ -1,6 +1,6 @@
 {
   "base": "http://127.0.0.1:4173",
-  "checkedAt": "2026-11-26T10:23:00.729Z",
+  "checkedAt": "2026-11-26T13:39:07.545Z",
   "browser": "Chromium",
   "checks": [
     "390px: 2 columns, every frame 170x128, ratio 4:3",

@@ -18,7 +18,8 @@
     "test:sql": "node scripts/sql-check.mjs",
     "test:api": "node scripts/api-contract.mjs",
     "test:upload": "node scripts/upload-rules.mjs",
-    "test:admin": "node scripts/admin-flow.mjs"
+    "test:admin": "node scripts/admin-flow.mjs",
+    "test:login": "node scripts/login-page.mjs"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^6.1.0",

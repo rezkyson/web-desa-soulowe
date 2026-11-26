@@ -1,7 +1,7 @@
 # Click-through verification (antislop R-35)
 
 Base: http://127.0.0.1:4173
-Date: 2026-11-26T10:24:48.193Z
+Date: 2026-11-26T13:36:28.056Z
 
 - Hero: Kenali desa kami -> /profil with h1 Profil Desa
 - Hero: scroll cue -> #tentang section reached
@@ -25,11 +25,8 @@ Date: 2026-11-26T10:24:48.193Z
 - Side news row -> detail page
 - Gallery tile -> album detail
 - Footer: Masuk Operator -> /admin/login
-- Admin login -> dashboard
-- Admin: create -> status confirms save
-- Admin: delete cancel -> row kept
-- Admin: delete confirm -> row removed
-- Admin: logout -> /admin/login
+- Admin login: wrong credentials -> error shown, stays on login
+- Admin gate -> requires operator session
 - Mobile menu -> opens and closes
 - Keyboard -> first Tab reaches skip link
 - Map: zoom in -> click accepted

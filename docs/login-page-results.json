@@ -1,0 +1,17 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "checkedAt": "2026-11-26T13:37:38.215Z",
+  "browser": "Chromium",
+  "checks": [
+    "login form talks to the real API, no simulation controls",
+    "form has Email, Password and a single Masuk button",
+    "login heading contrast 15.39:1",
+    "heading keeps spaces between lines",
+    "wrong password shows: \"Email atau password tidak sesuai.\"",
+    "failed login stays on the login page",
+    "error message contrast 4.85:1",
+    "admin routes are gated without a session",
+    "390px: no overflow, heading still readable"
+  ],
+  "errors": []
+}

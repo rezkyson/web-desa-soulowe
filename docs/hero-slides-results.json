@@ -1,6 +1,6 @@
 {
   "base": "http://127.0.0.1:4173",
-  "checkedAt": "2026-11-26T10:24:11.855Z",
+  "checkedAt": "2026-11-26T13:40:16.357Z",
   "browser": "Chromium",
   "checks": [
     "4 unique slides sourced from the newest albums",
@@ -18,9 +18,9 @@
   ],
   "errors": [],
   "sources": [
+    "/images/landscape.jpg",
     "/images/field.jpg",
     "/images/seedlings.jpg",
-    "/images/fields.jpg",
-    "/images/landscape.jpg"
+    "/images/fields.jpg"
   ]
 }

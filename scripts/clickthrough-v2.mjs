@@ -167,30 +167,19 @@ try {
   await expectPath(page, '/admin/login');
   record('Footer: Masuk Operator', '/admin/login');
 
-  // Admin demo: login, save, delete cancel, logout.
-  await page.getByLabel('Email contoh').fill('operator@example.com');
-  await page.getByLabel('Password contoh', { exact: true }).fill('contoh123');
-  await page.getByRole('button', { name: 'Masuk demo operator' }).click();
-  await expectPath(page, '/admin');
-  record('Admin login', 'dashboard');
-  await page.getByRole('navigation', { name: 'Navigasi admin' }).locator('a[href="/admin/pemerintahan"]').click();
-  await page.getByRole('button', { name: 'Tambah data', exact: true }).click();
-  await page.getByLabel('Nama / uraian').fill('Uji Gate');
-  await page.getByLabel('Jabatan', { exact: true }).fill('Staf Uji');
-  await page.getByRole('button', { name: 'Simpan perubahan demo' }).click();
-  await page.getByRole('status').filter({ hasText: 'Perubahan tersimpan' }).waitFor();
-  record('Admin: create', 'status confirms save');
-  await page.getByRole('button', { name: 'Hapus Uji Gate', exact: true }).click();
-  await page.getByRole('dialog').getByRole('button', { name: 'Batal', exact: true }).click();
-  assert(await page.getByRole('button', { name: 'Hapus Uji Gate', exact: true }).isVisible());
-  record('Admin: delete cancel', 'row kept');
-  await page.getByRole('button', { name: 'Hapus Uji Gate', exact: true }).click();
-  await page.getByRole('dialog').getByRole('button', { name: 'Hapus', exact: true }).click();
-  await page.getByRole('status').filter({ hasText: 'Item dihapus' }).waitFor();
-  record('Admin: delete confirm', 'row removed');
-  await page.getByRole('button', { name: 'Keluar dari demo' }).click();
+  // Panel admin sekarang dijaga sesi operator sungguhan. Alur tulis dengan
+  // sesi nyata diuji di scripts/admin-flow.mjs (butuh kredensial), jadi di sini
+  // hanya diperiksa bahwa gerbang sesi dan penolakan login bekerja.
   await expectPath(page, '/admin/login');
-  record('Admin: logout', '/admin/login');
+  await page.getByLabel('Email', { exact: true }).fill('tidak-ada@contoh.id');
+  await page.getByLabel('Password', { exact: true }).fill('salah-sekali');
+  await page.getByRole('button', { name: 'Masuk', exact: true }).click();
+  await page.locator('[role=alert]').waitFor({ state: 'visible', timeout: 20000 });
+  record('Admin login: wrong credentials', 'error shown, stays on login');
+  await page.goto(base + '/admin');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await page.getByRole('heading', { name: /Sesi operator diperlukan/i }).waitFor();
+  record('Admin gate', 'requires operator session');
 
   // Mobile menu open/close and Escape behaviour on the dialog.
   await page.setViewportSize({ width: 390, height: 844 });

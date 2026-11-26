@@ -261,6 +261,16 @@ tbody tr:hover { background: color-mix(in srgb, var(--mist) 55%, white); }
 .admin-stat-grid > div { background: var(--white); border-color: var(--line); border-radius: var(--radius-card); }
 .demo-banner { background: #f7f2e0; border-color: #e2d9bf; color: #6b5d33; }
 .login-story { background: var(--ink-forest); }
+/* Judul dan teks di panel kiri berada di atas latar gelap. Tanpa aturan ini
+   warna teks mewarisi --text yang gelap, sehingga kontrasnya 1:1. */
+.login-story h1,
+.login-story h2,
+.login-story h3 { color: var(--white); }
+/* <br> tidak menghasilkan spasi saat baris melipat di layar sempit, jadi judul
+   dibiarkan membungkus sendiri. Lebar dibatasi agar tetap 3 baris di desktop. */
+.login-story h1 { max-width: 15ch; }
+.login-story p { color: color-mix(in srgb, var(--signal) 62%, white); }
+.login-story > small { color: color-mix(in srgb, var(--signal) 55%, white); }
 .operator-avatar { background: var(--mist); color: var(--ink-forest); }
 .quick-links a { border-color: var(--line); }
 
