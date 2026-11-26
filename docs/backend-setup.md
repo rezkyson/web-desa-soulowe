@@ -118,7 +118,33 @@ supabase storage cp static/images/landscape.jpg ss:///media/images/landscape.jpg
 
 ## Verifikasi setelah selesai
 
-Jalankan sebagai anon (tanpa login) di SQL Editor dengan role `anon`:
+Jalankan **`supabase/verify.sql`** di SQL Editor. Seluruh isi file, satu kali Run.
+
+File itu mengumpulkan 16 pemeriksaan ke satu tabel sementara, karena SQL Editor
+hanya menampilkan hasil statement **terakhir**. Tanpa pengumpulan ini, Anda
+hanya akan melihat satu baris dan mengira sisanya gagal.
+
+Yang diperiksa:
+
+| No | Pemeriksaan |
+|---|---|
+| 1-2 | 14 tabel ada, RLS aktif di semuanya |
+| 3-4 | 52 policy konten, `admin_users` tanpa policy |
+| 5-6 | Bucket `media` 5 MB, 4 policy Storage |
+| 7-11 | Jumlah baris seed: statistik 29, keuangan 11, perangkat 8, berita 3, album 2 |
+| 12 | Nilai tidak tersedia tetap `null`, bukan 0 |
+| 13 | Foto unggulan tiap album benar milik albumnya |
+| 14 | Constraint tahun 2026 menolak tahun lain |
+| 15 | Trigger menolak unggulan dari album lain |
+| 16 | Status akun operator |
+
+Pemeriksaan 14 dan 15 sengaja mencoba operasi terlarang, lalu **mengembalikan
+keadaan semula** apa pun hasilnya, supaya pengujian tidak merusak data.
+
+Semua baris harus `ok`. Baris 16 boleh `BELUM` sampai akun operator dibuat.
+Kalau ada yang `GAGAL`, jangan lanjut ke tahap API: kirim hasilnya.
+
+Setelah akun operator ada, uji juga bahwa RLS menolak tulisan anonim:
 
 ```sql
 set role anon;
