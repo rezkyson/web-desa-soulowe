@@ -1,0 +1,15 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "checkedAt": "2026-11-26T14:36:15.330Z",
+  "steps": [
+    "login: 401 (invalid_credentials)",
+    "Set-Cookie dari login: TIDAK ADA"
+  ],
+  "results": {
+    "login": {
+      "status": 401,
+      "code": "invalid_credentials"
+    },
+    "cookiesWritten": []
+  }
+}

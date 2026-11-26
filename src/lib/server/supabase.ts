@@ -30,6 +30,8 @@ export function createSupabaseServerClient(cookies: Cookies) {
         return cookies.getAll();
       },
       setAll(items) {
+        // Diagnostik sementara: mencatat nama cookie, bukan nilainya.
+        console.log('[auth-debug] setAll:', items.map(i => i.name).join(', ') || '(kosong)');
         for (const { name, value, options } of items) {
           cookies.set(name, value, { ...options, path: options?.path ?? '/' });
         }

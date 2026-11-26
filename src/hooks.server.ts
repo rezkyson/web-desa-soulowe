@@ -12,7 +12,14 @@ import { getOperator } from '$lib/server/supabase';
 export const handle: Handle = async ({ event, resolve }) => {
   try {
     event.locals.operator = await getOperator(event.cookies);
-  } catch {
+    // Diagnostik sementara: apakah sesi dikenali pada request ini.
+    console.log(
+      '[auth-debug] hook', event.url.pathname,
+      'cookies:', event.cookies.getAll().map(c => c.name).join(',') || '(tidak ada)',
+      'operator:', event.locals.operator?.email ?? 'null'
+    );
+  } catch (cause) {
+    console.log('[auth-debug] hook error:', cause instanceof Error ? cause.message : cause);
     event.locals.operator = null;
   }
 
