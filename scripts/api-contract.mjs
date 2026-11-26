@@ -127,6 +127,65 @@ if (!configured) {
   checks.push('public API rejects writes');
 }
 
+// Endpoint admin harus menolak tanpa sesi, dalam mode apa pun. Ini berlaku
+// bahkan tanpa .env: yang diuji adalah tidak adanya akses, bukan isi data.
+{
+  const adminRoutes = [
+    ['GET', '/api/admin/auth/session'],
+    ['POST', '/api/admin/auth/logout'],
+    ['GET', '/api/admin/dashboard'],
+    ['POST', '/api/admin/officials'],
+    ['DELETE', '/api/admin/officials/00000000-0000-0000-0000-000000000000'],
+    ['POST', '/api/admin/news'],
+    ['PATCH', '/api/admin/albums/00000000-0000-0000-0000-000000000000/cover'],
+    ['POST', '/api/admin/finance']
+  ];
+
+  for (const [method, path] of adminRoutes) {
+    const response = await fetch(base + path, {
+      method,
+      headers: { 'content-type': 'application/json' },
+      body: method === 'GET' || method === 'DELETE' ? undefined : '{}'
+    });
+
+    // 401/403 = ditolak dengan benar. 503 = belum dikonfigurasi, juga tidak
+    // membocorkan akses. Yang tidak boleh: 200 atau 201.
+    assert(
+      [401, 403, 503].includes(response.status),
+      `${method} ${path} should be denied without a session, got ${response.status}`
+    );
+    assert(
+      ![200, 201].includes(response.status),
+      `${method} ${path} returned success without a session`
+    );
+  }
+  checks.push(`${adminRoutes.length} admin endpoints deny anonymous access`);
+
+  // Login dengan kredensial salah tidak boleh berhasil dan tidak boleh
+  // membocorkan apakah email terdaftar.
+  const badLogin = await fetch(base + '/api/admin/auth/login', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ email: 'tidak-ada@contoh.id', password: 'salah-sekali' })
+  });
+  assert([401, 503].includes(badLogin.status), `bad login returned ${badLogin.status}`);
+  if (badLogin.status === 401) {
+    const body = await badLogin.json();
+    assert.equal(body.error.code, 'invalid_credentials');
+    assert(!/tidak terdaftar|not found|user not found/i.test(body.error.message), 'login leaks account existence');
+  }
+  checks.push('wrong credentials are rejected without leaking account existence');
+
+  // Registrasi publik tidak boleh tersedia (PRD: satu akun operator saja).
+  const signup = await fetch(base + '/api/admin/auth/signup', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ email: 'x@contoh.id', password: 'apapun123' })
+  });
+  assert([404, 405].includes(signup.status), `signup endpoint should not exist, got ${signup.status}`);
+  checks.push('no public signup endpoint exists');
+}
+
 await mkdir('docs', { recursive: true });
 await writeFile('docs/api-contract-results.json', JSON.stringify({
   base,

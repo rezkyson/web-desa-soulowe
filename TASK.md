@@ -176,8 +176,8 @@ Revisi berikut diminta pengguna setelah FE-39 dan dikerjakan masih di dalam Fase
 
 ### 2.2 Auth dan otorisasi
 
-- [ ] BE-08 — Konfigurasikan Supabase Auth untuk satu akun operator yang dibuat secara terkontrol; nonaktifkan registrasi publik dan tidak menyediakan manajemen multi-user.
-- [ ] BE-09 — Implementasikan login email/password, logout, perubahan password yang aman, serta validasi/refresh session melalui Supabase SSR. Jangan menambahkan login username kecuali pemetaan yang diperlukan telah disepakati.
+- [x] BE-08 — Konfigurasikan Supabase Auth untuk satu akun operator yang dibuat secara terkontrol; nonaktifkan registrasi publik dan tidak menyediakan manajemen multi-user.
+- [x] BE-09 — Implementasikan login email/password, logout, perubahan password yang aman, serta validasi/refresh session melalui Supabase SSR. Jangan menambahkan login username kecuali pemetaan yang diperlukan telah disepakati.
 - [x] BE-10 — Tetapkan identitas admin secara eksplisit (misalnya ID akun operator yang diizinkan); setiap endpoint mutasi harus memeriksa admin, bukan sekadar keberadaan sesi.
 - [x] BE-11 — Terapkan RLS database dan policy Storage: publik hanya membaca konten publik; tulis hanya akun operator yang diizinkan; informasi akun tidak terbuka ke publik.
 - [x] BE-12 — Pastikan service role key hanya di server, tidak dipakai untuk melewati otorisasi request pengguna, dan tidak tampil di error/log/client bundle.
@@ -185,13 +185,13 @@ Revisi berikut diminta pengguna setelah FE-39 dan dikerjakan masih di dalam Fase
 ### 2.3 API ElysiaJS
 
 - [x] BE-13 — Pasang Elysia di endpoint SvelteKit dengan Web Request/Response, kompatibel runtime Vercel, tanpa server production `app.listen()`.
-- [ ] BE-14 — Implementasikan validasi request, respons/error konsisten, status HTTP, sanitasi isi berita, proteksi request mutasi lintas situs yang sesuai, serta penanganan error tanpa detail sensitif.
+- [x] BE-14 — Implementasikan validasi request, respons/error konsisten, status HTTP, sanitasi isi berita, proteksi request mutasi lintas situs yang sesuai, serta penanganan error tanpa detail sensitif.
 - [x] BE-15 — Buat operasi baca publik untuk pengaturan/media aktif, Kepala Desa, pemerintahan/BPD, statistik, fasilitas, keuangan, WhatsApp, berita, dan galeri; detail berita/album memakai slug.
-- [ ] BE-16 — Buat operasi admin untuk update profil Kepala Desa, konfigurasi media aktif, WhatsApp, serta statistik 2026.
-- [ ] BE-17 — Buat CRUD perangkat desa/BPD, fasilitas, dan item keuangan 2026 sesuai PRD.
-- [ ] BE-18 — Buat CRUD berita beserta foto tambahan; pembuatan langsung terbit, slug unik, dan tidak ada endpoint draft/approval/sembunyikan.
-- [ ] BE-19 — Buat CRUD album/foto beserta penetapan foto unggulan; album langsung tampil setelah penyimpanan berhasil.
-- [ ] BE-20 — Sediakan data ringkasan dashboard: jumlah berita/album dan tahun aktif 2026.
+- [x] BE-16 — Buat operasi admin untuk update profil Kepala Desa, konfigurasi media aktif, WhatsApp, serta statistik 2026.
+- [x] BE-17 — Buat CRUD perangkat desa/BPD, fasilitas, dan item keuangan 2026 sesuai PRD.
+- [x] BE-18 — Buat CRUD berita beserta foto tambahan; pembuatan langsung terbit, slug unik, dan tidak ada endpoint draft/approval/sembunyikan.
+- [x] BE-19 — Buat CRUD album/foto beserta penetapan foto unggulan; album langsung tampil setelah penyimpanan berhasil.
+- [x] BE-20 — Sediakan data ringkasan dashboard: jumlah berita/album dan tahun aktif 2026.
 
 ### 2.4 Storage dan pengelolaan media
 

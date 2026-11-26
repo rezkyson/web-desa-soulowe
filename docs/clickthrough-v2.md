@@ -1,7 +1,7 @@
 # Click-through verification (antislop R-35)
 
 Base: http://127.0.0.1:4173
-Date: 2026-11-25T14:04:40.713Z
+Date: 2026-11-26T10:24:48.193Z
 
 - Hero: Kenali desa kami -> /profil with h1 Profil Desa
 - Hero: scroll cue -> #tentang section reached

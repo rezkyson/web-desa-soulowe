@@ -1,7 +1,7 @@
 {
   "base": "http://127.0.0.1:4173",
   "browser": "Chromium",
-  "checkedAt": "2026-11-25T13:48:29.047Z",
+  "checkedAt": "2026-11-26T10:21:52.320Z",
   "checks": [
     "200 + heading + images: /",
     "200 + heading + images: /profil",
