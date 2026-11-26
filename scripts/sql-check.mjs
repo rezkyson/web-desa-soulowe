@@ -99,6 +99,14 @@ assert(!/service_role/i.test(rls), 'RLS file must not reference the service role
 assert(/revoke all on function public\.is_operator\(\) from public/.test(rls), 'is_operator must not be callable by public role');
 checks.push('service role absent from policies, is_operator locked down');
 
+// 8b. RLS alone does not grant access: the roles also need table privileges.
+// Without GRANT, anon gets "permission denied" before any policy is evaluated.
+const grants = readFileSync('supabase/migrations/20261126120000_grants.sql', 'utf8');
+assert(/grant select on public\.%I to anon/.test(grants), 'anon SELECT grant missing for content tables');
+assert(/grant select, insert, update, delete on public\.%I to authenticated/.test(grants), 'authenticated grants missing');
+assert(/revoke all on public\.admin_users from anon, authenticated/.test(grants), 'admin_users must be revoked from clients');
+checks.push('table grants present for anon (read) and authenticated (write), admin_users revoked');
+
 // 9. Storage bucket limits match the 5 MB and format rules.
 assert(/5 \* 1024 \* 1024/.test(rls), 'storage file size limit missing');
 assert(/array\['image\/jpeg', 'image\/png', 'image\/webp'\]/.test(rls), 'storage mime whitelist missing');

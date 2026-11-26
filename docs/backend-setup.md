@@ -20,7 +20,8 @@ membutuhkan tabel dari yang pertama, dan seed membutuhkan keduanya.
 |---|---|---|
 | 1 | `supabase/migrations/20261125120000_schema.sql` | 14 tabel, constraint, index, trigger |
 | 2 | `supabase/migrations/20261125120100_rls.sql` | RLS, policy, `admin_users`, bucket Storage |
-| 3 | `supabase/seed.sql` | Data awal dari dokumen profil desa |
+| 3 | `supabase/migrations/20261126120000_grants.sql` | Izin tabel untuk anon dan authenticated |
+| 4 | `supabase/seed.sql` | Data awal dari dokumen profil desa |
 
 Nama file memakai awalan tanggal supaya urutannya jelas dan cocok dengan
 Supabase CLI (`supabase db push` menjalankan migration sesuai nama).
@@ -93,6 +94,23 @@ Verifikasi:
 
 ```sql
 select public.is_operator();  -- false saat dijalankan sebagai anon, true sebagai operator
+```
+
+Panduan langkah demi langkah dengan tangkapan menu dan cara menguji login:
+`docs/operator-account.md`.
+
+## Izin tabel (penting)
+
+Migration `20261126120000_grants.sql` wajib dijalankan. RLS hanya menyaring
+baris; tanpa `GRANT`, role `anon` ditolak dengan "permission denied for table"
+sebelum policy dievaluasi. Supabase tidak memberi grant otomatis untuk tabel
+yang dibuat lewat SQL Editor.
+
+Kalau Anda sudah menjalankan tiga migration pertama sebelum file ini ada,
+jalankan file keempat ini sekarang:
+
+```sql
+-- isi supabase/migrations/20261126120000_grants.sql
 ```
 
 ## Mengunggah file media contoh

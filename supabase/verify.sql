@@ -69,40 +69,74 @@ from pg_policies
 where schemaname = 'storage' and tablename = 'objects'
   and policyname like 'media_%';
 
+-- 6b. Izin tabel untuk anon: 13 tabel konten harus bisa dibaca.
+-- RLS tidak menggantikan GRANT. Tanpa ini, request anon gagal dengan
+-- "permission denied" sebelum policy dievaluasi.
+insert into verify_results
+select 7, 'izin baca anon',
+  case when count(*) = 13 then 'ok'
+       else 'GAGAL: ' || count(*) || ' dari 13 tabel tanpa select untuk anon' end
+from information_schema.role_table_grants
+where grantee = 'anon' and table_schema = 'public'
+  and privilege_type = 'SELECT'
+  and table_name in (
+    'media_assets', 'site_settings', 'principal_profile', 'service_contacts',
+    'village_officials', 'bpd_members', 'statistics', 'facilities',
+    'financial_data', 'news', 'news_images', 'gallery_albums', 'gallery_images'
+  );
+
+-- 6c. anon tidak boleh punya izin tulis sama sekali.
+insert into verify_results
+select 8, 'anon tidak bisa menulis',
+  case when count(*) = 0 then 'ok'
+       else 'GAGAL: anon punya izin ' || string_agg(privilege_type, ', ') end
+from information_schema.role_table_grants
+where grantee = 'anon' and table_schema = 'public'
+  and privilege_type in ('INSERT', 'UPDATE', 'DELETE');
+
+-- 6d. admin_users tidak boleh bisa dibaca klien.
+insert into verify_results
+select 9, 'admin_users tidak terbaca klien',
+  case when count(*) = 0 then 'ok'
+       else 'GAGAL: ' || string_agg(grantee || ':' || privilege_type, ', ') end
+from information_schema.role_table_grants
+where table_schema = 'public' and table_name = 'admin_users'
+  and grantee in ('anon', 'authenticated');
+
 -- 7. Data seed terisi dengan jumlah yang benar.
 insert into verify_results
-select 7, 'seed statistik',
+select 10, 'seed statistik',
   case when count(*) = 29 then 'ok'
        else 'GAGAL: ' || count(*) || ' baris, seharusnya 29' end
 from public.statistics;
 
 insert into verify_results
-select 8, 'seed keuangan',
+select 11, 'seed keuangan',
   case when count(*) = 11 then 'ok'
        else 'GAGAL: ' || count(*) || ' baris, seharusnya 11' end
 from public.financial_data;
 
 insert into verify_results
-select 9, 'seed perangkat',
+select 12, 'seed perangkat',
   case when count(*) = 8 then 'ok'
        else 'GAGAL: ' || count(*) || ' baris, seharusnya 8' end
 from public.village_officials;
 
 insert into verify_results
-select 10, 'seed berita',
+select 13, 'seed berita',
   case when count(*) = 3 then 'ok'
        else 'GAGAL: ' || count(*) || ' baris, seharusnya 3' end
 from public.news;
 
 insert into verify_results
-select 11, 'seed album',
+select 14, 'seed album',
   case when count(*) = 2 then 'ok'
        else 'GAGAL: ' || count(*) || ' baris, seharusnya 2' end
 from public.gallery_albums;
 
 -- 12. Nilai tidak tersedia harus tetap null, bukan 0.
 insert into verify_results
-select 12, 'null bukan nol',
+select 15, 'null bukan nol',
   case when count(*) = 3 then 'ok'
        else 'GAGAL: ' || count(*) || ' baris pendapatan bernilai null' end
 from public.financial_data
@@ -110,7 +144,7 @@ where category = 'Pendapatan' and value is null;
 
 -- 13. Foto unggulan tiap album harus benar-benar milik album itu.
 insert into verify_results
-select 13, 'unggulan album valid',
+select 16, 'unggulan album valid',
   case when count(*) = 0 then 'ok'
        else 'GAGAL: ' || count(*) || ' album dengan unggulan di luar albumnya' end
 from public.gallery_albums a
@@ -138,7 +172,7 @@ begin
   end if;
 
   insert into verify_results
-  select 14, 'tahun terkunci 2026',
+  select 17, 'tahun terkunci 2026',
     case when ditolak then 'ok'
          else 'GAGAL: constraint tahun tidak bekerja' end;
 end;
@@ -167,7 +201,7 @@ begin
   end;
 
   insert into verify_results
-  select 15, 'unggulan album dijaga trigger',
+  select 18, 'unggulan album dijaga trigger',
     case when ditolak then 'ok'
          else 'GAGAL: trigger tidak bekerja' end;
 end;
@@ -175,7 +209,7 @@ $$;
 
 -- 16. Akun operator. Boleh BELUM selama akun belum dibuat.
 insert into verify_results
-select 16, 'akun operator',
+select 19, 'akun operator',
   case when count(*) >= 1 then 'ok: ' || count(*) || ' operator terdaftar'
        else 'BELUM: daftarkan akun di admin_users' end
 from public.admin_users;
