@@ -1,7 +1,5 @@
-# Keep line endings stable across Windows, macOS, and CI.
-* text=auto eol=lf
-
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.docx binary
+# File batch Windows WAJIB memakai CRLF. Dengan LF, cmd.exe salah membaca
+# baris REM dan teks komentar tercetak ke layar, bahkan skrip bisa gagal jalan.
+# Aturan ini mengalahkan konversi otomatis git.
+*.cmd text eol=crlf
+*.bat text eol=crlf
