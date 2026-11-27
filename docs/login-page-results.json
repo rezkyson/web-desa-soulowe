@@ -1,6 +1,6 @@
 {
   "base": "http://127.0.0.1:4173",
-  "checkedAt": "2026-11-26T13:37:38.215Z",
+  "checkedAt": "2026-11-27T02:01:08.964Z",
   "browser": "Chromium",
   "checks": [
     "login form talks to the real API, no simulation controls",

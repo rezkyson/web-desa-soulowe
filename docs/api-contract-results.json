@@ -1,6 +1,6 @@
 {
   "base": "http://127.0.0.1:4173",
-  "checkedAt": "2026-11-26T13:37:47.413Z",
+  "checkedAt": "2026-11-27T02:01:14.995Z",
   "mode": "configured",
   "checks": [
     "10 public endpoints respond with the documented Result shape",

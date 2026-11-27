@@ -137,8 +137,7 @@ supabase storage cp static/images/landscape.jpg ss:///media/images/landscape.jpg
 ## Verifikasi setelah selesai
 
 Jalankan **`supabase/verify.sql`** di SQL Editor. Seluruh isi file, satu kali Run.
-
-File itu mengumpulkan 16 pemeriksaan ke satu tabel sementara, karena SQL Editor
+File itu mengumpulkan 19 pemeriksaan ke satu tabel sementara, karena SQL Editor
 hanya menampilkan hasil statement **terakhir**. Tanpa pengumpulan ini, Anda
 hanya akan melihat satu baris dan mengira sisanya gagal.
 
@@ -149,12 +148,13 @@ Yang diperiksa:
 | 1-2 | 14 tabel ada, RLS aktif di semuanya |
 | 3-4 | 52 policy konten, `admin_users` tanpa policy |
 | 5-6 | Bucket `media` 5 MB, 4 policy Storage |
-| 7-11 | Jumlah baris seed: statistik 29, keuangan 11, perangkat 8, berita 3, album 2 |
-| 12 | Nilai tidak tersedia tetap `null`, bukan 0 |
-| 13 | Foto unggulan tiap album benar milik albumnya |
-| 14 | Constraint tahun 2026 menolak tahun lain |
-| 15 | Trigger menolak unggulan dari album lain |
-| 16 | Status akun operator |
+| 7-9 | Izin baca anon lengkap, anon tanpa izin tulis, `admin_users` tertutup untuk klien |
+| 10-14 | Jumlah baris seed: statistik 29, keuangan 11, perangkat 8, berita 3, album 2 |
+| 15 | Nilai tidak tersedia tetap `null`, bukan 0 |
+| 16 | Foto unggulan tiap album benar milik albumnya |
+| 17 | Constraint tahun 2026 menolak tahun lain |
+| 18 | Trigger menolak unggulan dari album lain |
+| 19 | Status akun operator |
 
 Pemeriksaan 14 dan 15 sengaja mencoba operasi terlarang, lalu **mengembalikan
 keadaan semula** apa pun hasilnya, supaya pengujian tidak merusak data.
@@ -174,3 +174,34 @@ reset role;
 
 Kalau insert sebagai anon berhasil, RLS belum aktif dan harus diperbaiki
 sebelum lanjut ke Fase 3.
+
+## Verifikasi RLS untuk tiga peran
+
+`supabase/verify.sql` memeriksa struktur dan data. Untuk membuktikan RLS benar
+menolak akses yang salah, jalankan **`supabase/rls-roles.sql`** sekali di SQL
+Editor. File itu menguji tiga peran dalam satu kali Run:
+
+| Peran | Yang diharapkan |
+|---|---|
+| `anon` | Baca konten berhasil; tulis ditolak; `admin_users` tidak terbaca; `is_operator()` false |
+| `authenticated` bukan operator | Baca berhasil; tulis/ubah/hapus ditolak RLS; `is_operator()` false; tulis Storage ditolak |
+| `authenticated` operator | `is_operator()` true; tulis berita diterima |
+
+Cara kerjanya: peran ditukar dengan `SET LOCAL ROLE` di dalam satu transaksi,
+lalu dikembalikan. Setiap operasi tulis yang seharusnya ditolak dijalankan
+sungguhan, lalu **selalu** dibatalkan dengan `RAISE`. Jadi tidak ada baris uji
+yang tertinggal, bahkan kalau RLS ternyata bocor dan tulisan diterima.
+
+Kode error ikut dicatat karena bedanya penting:
+
+- `42501` + "row-level security" berarti ditolak RLS, sesuai harapan.
+- `42501` + "permission denied" berarti ditolak GRANT, RLS belum sempat menilai.
+  Untuk peran `anon` ini normal; untuk `authenticated` ini menandakan GRANT
+  tabel bermasalah.
+
+Yang perlu Anda lihat: baris ringkasan terakhir, `perlu_diperiksa` harus `0`.
+
+## Kontrak endpoint
+
+Daftar lengkap endpoint, bentuk respons, kode error, dan aturan validasinya ada
+di `docs/api-endpoints.md`.

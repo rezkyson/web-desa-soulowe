@@ -116,5 +116,58 @@ checks.push('storage bucket: 5 MB limit and JPG/PNG/WebP whitelist');
 assert(schema.includes('create table public.media_assets'), 'media_assets missing from schema');
 checks.push(`schema defines ${tables.size} tables`);
 
+// 11. supabase/rls-roles.sql menukar peran database. Dua kesalahan di file itu
+//     tidak akan terlihat sampai dijalankan di Supabase, jadi diperiksa di sini.
+const roles = readFileSync('supabase/rls-roles.sql', 'utf8');
+
+// Komentar dibuang lebih dulu: penjelasan di dalamnya menyebut "SET LOCAL ROLE"
+// dan akan salah dihitung sebagai perintah sungguhan.
+const rolesCode = roles
+  .split(/\r?\n/)
+  .map(line => line.replace(/--.*$/, ''))
+  .join('\n');
+
+// 11a. Dollar-quote harus seimbang, kalau tidak seluruh file gagal di-parse.
+const dollarQuotes = (rolesCode.match(/\$[a-z_]*\$/g) ?? []).length;
+assert(dollarQuotes % 2 === 0, `rls-roles.sql has an unbalanced dollar-quote (${dollarQuotes} found)`);
+
+// 11b. Setiap "set role" harus punya "reset role" pasangannya. Batas kata
+//      diperlukan karena "reset role" mengandung teks "set role". Hanya isi blok
+//      DO yang dihitung: di luar blok ada satu "reset role" tambahan sebagai
+//      jaring pengaman, yang memang tidak berpasangan.
+const doBlock = rolesCode.split('$outer$')[1] ?? '';
+assert(doBlock.length > 0, 'rls-roles.sql has no $outer$ block');
+const switches = (doBlock.match(/(?<![a-z])set (local )?role/gi) ?? []).length;
+const resets = (doBlock.match(/(?<![a-z])reset role/gi) ?? []).length;
+assert.equal(switches, resets, `rls-roles.sql: ${switches} role switches but ${resets} resets inside the DO block`);
+
+// 11c. SET LOCAL ROLE hanya berlaku di dalam transaksi. SQL Editor belum tentu
+//      membungkus query dalam transaksi, dan kalau tidak berlaku semua uji akan
+//      berjalan sebagai pemilik tabel lalu lulus palsu. Harus SET ROLE biasa.
+assert(
+  !/set local role/i.test(rolesCode),
+  'rls-roles.sql uses SET LOCAL ROLE, which silently does nothing outside a transaction'
+);
+
+// 11c. Yang paling mudah salah: menulis hasil saat peran masih ditukar. Peran
+//      anon/authenticated tidak punya izin ke tabel hasil, jadi insert seperti
+//      itu gagal dan seluruh skrip berhenti. Hasil harus ditampung dulu, lalu
+//      ditulis setelah peran dikembalikan.
+let roleDepth = 0;
+let lineNo = 0;
+for (const line of doBlock.split(/\r?\n/)) {
+  lineNo++;
+  if (/(?<![a-z])set (local )?role/i.test(line)) roleDepth++;
+  if (/(?<![a-z])reset role/i.test(line)) roleDepth--;
+  if (roleDepth > 0 && /insert into rls_results/i.test(line)) {
+    assert.fail(
+      `rls-roles.sql line ${lineNo}: writes to rls_results while the role is still switched; ` +
+      'collect the result first, then insert after "reset role"'
+    );
+  }
+}
+assert.equal(roleDepth, 0, 'rls-roles.sql ends with a role still switched');
+checks.push('rls-roles.sql: balanced quotes, paired role switches, no writes under a switched role');
+
 console.log(`PASS: ${checks.length} SQL structural checks.`);
 for (const c of checks) console.log(`  - ${c}`);
