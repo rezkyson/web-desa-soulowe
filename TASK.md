@@ -203,7 +203,7 @@ Revisi berikut diminta pengguna setelah FE-39 dan dikerjakan masih di dalam Fase
 ### 2.5 Pemeriksaan dan hasil fase
 
 - [x] BE-25 — Verifikasi API tanpa UI: baca anonim, mutasi admin, penolakan anonim/non-admin, validasi input/upload, detail tidak ditemukan, dan penanganan error.
-- [ ] BE-26 — Periksa RLS dan Storage langsung dengan akses anonim, admin, dan identitas non-admin; jangan hanya menguji endpoint yang memakai service role.
+- [x] BE-26 — Periksa RLS dan Storage langsung dengan akses anonim, admin, dan identitas non-admin; jangan hanya menguji endpoint yang memakai service role.
 - [x] BE-27 — Jalankan type-check/build; dokumentasikan migration/seed, kontrak endpoint, environment, pembuatan akun, dan hasil pemeriksaan backend.
 
 **Batas fase:** Jangan menghubungkan UI frontend ke API/Auth/Storage nyata. Jangan deploy aplikasi ke Vercel. Pembuatan resource berbayar atau penggunaan data produksi memerlukan izin tersendiri.
