@@ -25,7 +25,6 @@ export function authApi(cookies: Cookies) {
 
       try {
         const { data, error } = await db().auth.signInWithPassword({ email, password });
-        console.log('[auth-debug] signIn:', error ? `error ${error.code ?? error.message}` : `ok user=${data.user?.id?.slice(0, 8)} session=${Boolean(data.session)}`);
 
         if (error) {
           // Pesan seragam: jangan membocorkan apakah email terdaftar atau tidak.
