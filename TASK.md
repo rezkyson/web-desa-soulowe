@@ -212,9 +212,9 @@ Revisi berikut diminta pengguna setelah FE-39 dan dikerjakan masih di dalam Fase
 
 ### Gerbang Fase 2 → Fase 3
 
-- [ ] G2-01 — Hasil backend dan bukti pemeriksaan disampaikan; blocker kritis diselesaikan.
-- [ ] G2-02 — Pengguna menerima hasil Fase 2.
-- [ ] G2-03 — Pengguna secara eksplisit mengizinkan **Fase 3 — Integration**.
+- [x] G2-01 — Hasil backend dan bukti pemeriksaan disampaikan; blocker kritis diselesaikan.
+- [x] G2-02 — Pengguna menerima hasil Fase 2.
+- [x] G2-03 — Pengguna secara eksplisit mengizinkan **Fase 3 — Integration**.
 
 **STOP: Jangan mulai integrasi sebelum G2-03 disetujui.**
 

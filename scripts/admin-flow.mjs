@@ -13,13 +13,38 @@
 import assert from 'node:assert/strict';
 import { writeFile, mkdir } from 'node:fs/promises';
 
-const base = process.env.PREVIEW_URL || 'http://127.0.0.1:4173';
-const email = process.env.OPERATOR_EMAIL;
-const password = process.env.OPERATOR_PASSWORD;
+/**
+ * Nilai dari `set VAR=nilai` di cmd.exe mudah membawa spasi di akhir, dan
+ * `set VAR="nilai"` membawa tanda kutipnya sekalian. Keduanya membuat login
+ * ditolak walaupun email dan password yang diketik sudah benar.
+ *
+ * Dibersihkan di sini supaya kegagalan login benar-benar berarti kredensial
+ * salah, bukan masalah shell.
+ */
+function clean(value) {
+  if (!value) return '';
+  return value.trim().replace(/^["']|["']$/g, '').trim();
+}
+
+const base = clean(process.env.PREVIEW_URL) || 'http://127.0.0.1:4173';
+const email = clean(process.env.OPERATOR_EMAIL);
+const password = clean(process.env.OPERATOR_PASSWORD);
 
 if (!email || !password) {
   console.error('OPERATOR_EMAIL dan OPERATOR_PASSWORD belum diisi. Lihat komentar di atas.');
   process.exit(1);
+}
+
+// Diberitahukan, bukan didiamkan: kalau ada karakter nyasar, operator perlu
+// tahu supaya tidak mengira passwordnya salah.
+const pairs = [
+  ['OPERATOR_EMAIL', process.env.OPERATOR_EMAIL ?? '', email],
+  ['OPERATOR_PASSWORD', process.env.OPERATOR_PASSWORD ?? '', password]
+];
+for (const [name, raw, cleaned] of pairs) {
+  if (raw !== cleaned) {
+    console.warn(`Catatan: ${name} mengandung spasi atau tanda kutip berlebih; sudah dibersihkan otomatis.`);
+  }
 }
 
 const checks = [];
@@ -59,10 +84,37 @@ async function call(path, { method = 'GET', body } = {}) {
 
 let failure = null;
 
+/**
+ * Menghapus data uji.
+ *
+ * Versi lama fungsi ini tidak memeriksa hasil penghapusan, dan dipanggil
+ * setelah logout. Akibatnya setiap DELETE ditolak 401 tanpa ketahuan, lalu
+ * skrip tetap melaporkan "test data removed". Sekarang hasilnya diperiksa dan
+ * kegagalan dilaporkan, supaya klaim kebersihan tidak lagi bohong.
+ */
 async function cleanup() {
-  if (created.news) await call(`/api/admin/news/${created.news}`, { method: 'DELETE' });
-  if (created.album) await call(`/api/admin/albums/${created.album}`, { method: 'DELETE' });
-  if (created.official) await call(`/api/admin/officials/${created.official}`, { method: 'DELETE' });
+  const targets = [
+    ['news', created.news],
+    ['albums', created.album],
+    ['officials', created.official]
+  ];
+
+  const failed = [];
+  for (const [resource, id] of targets) {
+    if (!id) continue;
+    const response = await call(`/api/admin/${resource}/${id}`, { method: 'DELETE' });
+    if (response.status !== 200) {
+      failed.push(`${resource}/${id} (${response.status})`);
+    }
+  }
+
+  if (failed.length) {
+    console.warn(
+      `PERINGATAN: data uji gagal dihapus: ${failed.join(', ')}. ` +
+      'Jalankan scripts/cleanup-test-data.mjs untuk membersihkannya.'
+    );
+  }
+  return failed;
 }
 
 try {
@@ -168,20 +220,31 @@ try {
   created.official = official.body.data.id;
   checks.push('official created');
 
-  // 10. Logout benar-benar mengakhiri sesi.
+  // 10. Hapus data uji SELAGI sesi masih aktif. Kalau logout dilakukan lebih
+  //     dulu, semua DELETE akan ditolak 401 dan data uji tertinggal.
+  const cleanupFailures = await cleanup();
+  if (cleanupFailures.length) {
+    checks.push(`PERINGATAN: data uji gagal dihapus: ${cleanupFailures.join(', ')}`);
+  } else {
+    created.news = created.album = created.official = null;
+    checks.push('test data removed');
+  }
+
+  // 11. Logout benar-benar mengakhiri sesi. Dilakukan setelah pembersihan.
   const out = await call('/api/admin/auth/logout', { method: 'POST' });
   assert.equal(out.status, 200);
   const afterOut = await call('/api/admin/auth/session');
   assert.equal(afterOut.status, 401, `session still valid after logout: ${afterOut.status}`);
   checks.push('logout invalidates the session');
-
-  await cleanup();
-  created.news = created.album = created.official = null;
-  checks.push('test data removed');
 } catch (cause) {
   failure = cause;
 } finally {
-  await cleanup();
+  // Kalau gagal di tengah, sesi mungkin sudah tidak valid. cleanup() akan
+  // melaporkan bila penghapusan ditolak, bukan diam-diam menganggap bersih.
+  const remaining = await cleanup();
+  if (remaining.length && !failure) {
+    failure = new Error(`data uji tidak bersih: ${remaining.join(', ')}`);
+  }
 }
 
 await mkdir('docs', { recursive: true });

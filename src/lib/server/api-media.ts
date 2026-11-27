@@ -17,10 +17,13 @@ import {
  * - Foto unggulan album harus salah satu foto album itu; trigger database
  *   menolak yang lain, dan API memberi pesan yang bisa ditindaklanjuti.
  */
+
+function has(body: Record<string, unknown>, key: string): boolean {
+  return Object.prototype.hasOwnProperty.call(body, key);
+}
+
 export function mediaApi(cookies: Cookies) {
   const db = () => createSupabaseServerClient(cookies);
-
-
 
   async function newsSlug(title: string) {
     return uniqueSlug(title, async candidate => {
@@ -87,16 +90,17 @@ export function mediaApi(cookies: Cookies) {
 
       try {
         // Slug sengaja tidak ikut diubah, supaya tautan lama tidak mati.
-        const { error } = await db().from('news').update({
+        const patch: Record<string, unknown> = {
           title,
           category: required(body.category, 60),
           published_on: isoDate(body.publishedOn) ?? undefined,
           author: required(body.author, 120),
           summary: required(body.summary, 500) ?? '',
-          body: required(body.body, 50000) ?? '',
-          cover_media_id: body.coverMediaId ?? null
-        }).eq('id', params.id);
+          body: required(body.body, 50000) ?? ''
+        };
+        if (has(body, 'coverMediaId')) patch.cover_media_id = body.coverMediaId ?? null;
 
+        const { error } = await db().from('news').update(patch).eq('id', params.id);
         if (error) return serverError('PATCH /api/admin/news/:id', error);
         return ok({ updated: true });
       } catch (cause) {
@@ -116,6 +120,56 @@ export function mediaApi(cookies: Cookies) {
         return ok({ deleted: true });
       } catch (cause) {
         return serverError('DELETE /api/admin/news/:id', cause);
+      }
+    })
+
+    // Foto tambahan berita. Tanpa ini, foto pendukung hanya bisa dibaca,
+    // tidak pernah bisa ditambahkan lewat panel.
+    .post('/news/:id/images', async ({ request, params }) => {
+      const denied = await requireOperator(cookies);
+      if (denied) return denied;
+
+      const body = await readJson(request);
+      if (!body) return fail(400, 'invalid_body', 'Permintaan tidak valid.');
+
+      const mediaId = required(body.mediaId, 64);
+      if (!mediaId) return fail(422, 'validation_error', 'Pilih foto terlebih dahulu.', {
+        mediaId: 'Wajib dipilih.'
+      });
+
+      try {
+        const { data, error } = await db().from('news_images').insert({
+          news_id: params.id,
+          media_id: mediaId,
+          alt: required(body.alt, 300) ?? '',
+          display_order: intOrZero(body.order)
+        }).select('id').single();
+
+        if (error) {
+          if ((error as { code?: string }).code === '23505') {
+            return fail(409, 'duplicate_photo', 'Foto itu sudah ada pada berita ini.');
+          }
+          return serverError('POST /api/admin/news/:id/images', error);
+        }
+        return ok({ id: data.id }, 201);
+      } catch (cause) {
+        return serverError('POST /api/admin/news/:id/images', cause);
+      }
+    })
+
+    .delete('/news/:id/images/:imageId', async ({ params }) => {
+      const denied = await requireOperator(cookies);
+      if (denied) return denied;
+
+      try {
+        const { error } = await db().from('news_images')
+          .delete()
+          .eq('id', params.imageId)
+          .eq('news_id', params.id);
+        if (error) return serverError('DELETE /api/admin/news/:id/images/:imageId', error);
+        return ok({ deleted: true });
+      } catch (cause) {
+        return serverError('DELETE /api/admin/news/:id/images/:imageId', cause);
       }
     })
 

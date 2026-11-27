@@ -9,8 +9,15 @@
 begin;
 
 -- ---------------------------------------------------------------------------
--- Media contoh. File fisik harus diunggah ke Storage bucket `media` dengan
--- path yang sama, atau baris ini dilewati. Seed tidak mengunggah biner.
+-- Media contoh. File fisik ada di folder `static/` aplikasi, bukan di Storage.
+-- `is_dummy = true` berarti "berkas bawaan aplikasi", dan UI menyajikannya dari
+-- `/images/...`. Media unggahan operator memakai `is_dummy = false` dan
+-- disajikan dari bucket `media`.
+--
+-- Lambang Kabupaten Sigi ikut ditandai true karena ia juga berkas bawaan
+-- aplikasi (static/logo.png), bukan hasil unggahan operator. Sebelumnya baris
+-- ini bertanda false, sehingga UI mencari logo di Storage dan gambarnya gagal
+-- dimuat di seluruh halaman.
 -- ---------------------------------------------------------------------------
 insert into public.media_assets (storage_path, mime_type, byte_size, alt, is_dummy)
 values
@@ -18,8 +25,17 @@ values
   ('images/field.jpg',     'image/jpeg', 163237, 'Ilustrasi lahan pertanian', true),
   ('images/fields.jpg',    'image/jpeg', 513174, 'Ilustrasi hasil panen sayur', true),
   ('images/seedlings.jpg', 'image/jpeg', 501767, 'Ilustrasi bibit tanaman', true),
-  ('images/logo.png',      'image/png',  133559, 'Lambang Kabupaten Sigi', false)
+  ('images/logo.png',      'image/png',  133559, 'Lambang Kabupaten Sigi', true)
 on conflict (storage_path) do nothing;
+
+-- Perbaikan untuk database yang sudah menjalankan seed versi lama: baris logo
+-- terlanjur bertanda false sehingga diarahkan ke Storage. Aman diulang.
+update public.media_assets
+set is_dummy = true
+where storage_path in (
+  'images/landscape.jpg', 'images/field.jpg', 'images/fields.jpg',
+  'images/seedlings.jpg', 'images/logo.png'
+);
 
 -- ---------------------------------------------------------------------------
 -- Singleton

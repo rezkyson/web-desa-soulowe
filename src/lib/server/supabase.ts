@@ -57,6 +57,29 @@ export function createSupabaseAdminClient() {
 }
 
 /**
+ * Klien untuk pembacaan publik tanpa sesi.
+ *
+ * Dipakai saat SSR halaman publik: tidak ada cookie yang perlu dibaca, dan
+ * hasilnya tetap tunduk pada RLS karena memakai kunci publishable, bukan
+ * service role.
+ */
+export function createSupabasePublicClient() {
+  const url = publicEnv.PUBLIC_SUPABASE_URL;
+  const key = publicEnv.PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!url || !key) {
+    throw new Error(
+      'PUBLIC_SUPABASE_URL dan PUBLIC_SUPABASE_PUBLISHABLE_KEY belum diisi. ' +
+      'Salin .env.example menjadi .env lalu isi nilainya.'
+    );
+  }
+
+  return createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+}
+
+/**
  * Operator yang sedang login, atau null. Memeriksa dua hal: ada sesi valid,
  * dan user tersebut terdaftar di admin_users. Sesi saja tidak cukup (BE-10).
  */

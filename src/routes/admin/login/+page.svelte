@@ -2,7 +2,6 @@
   import { goto } from '$app/navigation';
   import { ArrowLeft, ArrowRight, Eye, EyeOff } from '@lucide/svelte';
   import Meta from '$lib/components/Meta.svelte';
-  import { demoSession } from '$lib/mock/store';
 
   let email = $state('');
   let password = $state('');
@@ -36,9 +35,8 @@
         return;
       }
 
-      // Sesi asli sudah dibuat lewat cookie oleh server. Tanda demo lama
-      // dibersihkan supaya tidak ada dua sumber kebenaran.
-      demoSession.set(false);
+      // Sesi asli dibuat lewat cookie oleh server. Tidak ada tanda simulasi
+      // yang perlu dibersihkan karena alur demo sudah dihapus.
       password = '';
       await goto('/admin');
     } catch {

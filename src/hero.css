@@ -132,6 +132,22 @@
   margin-top: 26px;
 }
 .hero-card-figure { position: relative; overflow: hidden; }
+/* Keadaan kosong saat galeri belum berisi foto: bidang gelap yang tenang,
+   bukan kotak putih yang mematahkan komposisi hero. */
+.hero-slides-empty {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  aspect-ratio: 16 / 11;
+  padding: 18px;
+  background: linear-gradient(160deg, #17402d 0%, #0e2c1e 100%);
+  color: #c8dcc0;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.hero-slides-empty svg { opacity: 0.6; }
 .hero-card-body { padding: 16px 18px 18px; }
 .hero-card-body h2 {
   color: var(--white);

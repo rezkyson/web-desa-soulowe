@@ -1,10 +1,22 @@
 <script lang="ts">
   import { page } from '$app/state';
   import { ArrowUpRight, Menu, X, MapPin, ArrowRight } from '@lucide/svelte';
-  import { demo } from '$lib/mock/store';
   import { village } from '$lib/content/desa';
+  import { mediaUrl } from '$lib/media';
   import PublicMotion from './PublicMotion.svelte';
-  let { children } = $props();
+  import type { Settings, Contact } from '$lib/data/types';
+
+  let { settings, contact, children }: {
+    settings: Settings | null;
+    contact: Contact | null;
+    children: import('svelte').Snippet;
+  } = $props();
+
+  // Logo resmi belum tentu sudah diunggah. Kalau belum ada, nama desa tetap
+  // tampil sebagai teks; tidak ada gambar pengganti yang dikarang.
+  const logo = $derived(mediaUrl(settings?.logo, ''));
+  const phone = $derived(contact?.phone ?? '');
+
   let menu = $state(false);
   let solid = $state(false);
   let toggle = $state<HTMLButtonElement>();
@@ -32,7 +44,7 @@
 {#if !isHome}<div class="topline"><div class="container"><span>Pemerintah Desa Soulowe</span><span>Kecamatan Sigi Kota <span class="top-dot">•</span> Kabupaten Sigi</span></div></div>{/if}
 <header class="public-header" class:is-overlay={isHome} class:is-solid={isHome && solid}>
   <div class="container header-inner">
-    <a href="/" class="brand" aria-label="Desa Soulowe, beranda"><img src={$demo.settings.logo} width="39" height="56" alt="Lambang Kabupaten Sigi" /><span><strong>SOULOWE</strong><small>Kabupaten Sigi</small></span></a>
+    <a href="/" class="brand" aria-label="Desa Soulowe, beranda">{#if logo}<img src={logo} width="39" height="56" alt="Lambang Kabupaten Sigi" />{/if}<span><strong>SOULOWE</strong><small>Kabupaten Sigi</small></span></a>
     <nav id="navigasi-utama" aria-label="Navigasi utama" class:mobile-open={menu}>
       {#each links as [href, text]}<a {href} aria-current={page.url.pathname === href || (href !== '/' && page.url.pathname.startsWith(`${href}/`)) ? 'page' : undefined}>{text}</a>{/each}
       <a class="nav-contact" href="/kontak">Hubungi desa <ArrowUpRight size={16} /></a>
@@ -43,8 +55,8 @@
 <main id="main" tabindex="-1" class="public-main">{@render children()}</main>
 <section class="contact-strip"><div class="container"><div><span class="eyebrow light">Tetap terhubung</span><h2>Butuh informasi dari desa?</h2><p>Temukan lokasi kantor dan kanal WhatsApp pemerintah desa.</p></div><a class="button cream" href="/layanan">Layanan WhatsApp <ArrowUpRight size={18} /></a></div></section>
 <footer class="public-footer"><div class="container footer-grid">
-  <div><a href="/" class="brand"><img src={$demo.settings.logo} width="36" height="51" alt="Lambang Kabupaten Sigi" /><span><strong>SOULOWE</strong><small>Desa di Kabupaten Sigi</small></span></a><p>Ruang informasi, cerita, dan keterbukaan<br />Pemerintah Desa Soulowe.</p></div>
+  <div><a href="/" class="brand">{#if logo}<img src={logo} width="36" height="51" alt="Lambang Kabupaten Sigi" />{/if}<span><strong>SOULOWE</strong><small>Desa di Kabupaten Sigi</small></span></a><p>Ruang informasi, cerita, dan keterbukaan<br />Pemerintah Desa Soulowe.</p></div>
   <div><h3>Jelajahi desa</h3><a href="/profil">Profil Desa</a><a href="/pemerintahan">Pemerintahan</a><a href="/data">Data Desa</a><a href="/keuangan">Keuangan Desa</a></div>
   <div><h3>Kabar dan dokumentasi</h3><a href="/berita">Berita Desa</a><a href="/galeri">Galeri Kegiatan</a><a href="/layanan">Layanan WhatsApp</a><a href="/admin/login">Masuk Operator <ArrowRight size={13} /></a></div>
   <div><h3>Kantor Desa</h3><p>{village.address}<br />Kec. Sigi Kota, Kab. Sigi<br />Sulawesi Tengah</p><a href="/kontak" class="text-link"><MapPin size={15} /> Lihat lokasi <ArrowUpRight size={15} /></a></div>
-</div><div class="container footer-bottom"><span>© 2026 Pemerintah Desa Soulowe.</span><span>Preview pengembangan · Konten contoh belum resmi</span></div></footer>
+</div><div class="container footer-bottom"><span>© 2026 Pemerintah Desa Soulowe.</span><span>{contact?.is_dummy || !phone ? 'Nomor layanan contoh, belum resmi' : 'Nomor layanan resmi desa'}</span></div></footer>

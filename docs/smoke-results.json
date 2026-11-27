@@ -1,7 +1,7 @@
 {
   "base": "http://127.0.0.1:4173",
   "browser": "Chromium",
-  "checkedAt": "2026-11-27T02:34:28.671Z",
+  "checkedAt": "2026-11-27T06:27:06.978Z",
   "checks": [
     "200 + heading + images: /",
     "200 + heading + images: /profil",
@@ -18,7 +18,7 @@
     "No viewport overflow: 768px",
     "No viewport overflow: 1440px",
     "Mobile navigation works",
-    "404, missing news, gallery lightbox",
+    "404 pages, missing news/album, gallery lightbox",
     "admin panel is gated without an operator session",
     "login rejects unknown credentials",
     "Admin editor flow is covered by admin-flow.mjs (needs credentials)",

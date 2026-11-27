@@ -1,41 +1,40 @@
 <script lang="ts">
-  import { ArrowUpRight, ArrowRight, ArrowDown, MapPin, Building2, Users, Landmark, Phone, Compass } from '@lucide/svelte';
+  import { ArrowUpRight, ArrowRight, ArrowDown, MapPin, Building2, Users, Landmark, Phone, Compass, UserRound } from '@lucide/svelte';
   import Meta from '$lib/components/Meta.svelte';
   import AnimatedBorder from '$lib/components/ui/AnimatedBorder.svelte';
   import Location from '$lib/components/Location.svelte';
   import HeroSlides from '$lib/components/HeroSlides.svelte';
+  import State from '$lib/components/State.svelte';
   import { reveal } from '$lib/actions/reveal';
-  import { demo } from '$lib/mock/store';
   import { village } from '$lib/content/desa';
   import { number, whatsapp, date } from '$lib/utils';
+  import { mediaUrl } from '$lib/media';
 
-  const facts = $derived($demo.statistics.filter(s => s.category === 'Kependudukan').filter(s => !['Laki-laki', 'Perempuan'].includes(s.name)));
-  const featured = $derived($demo.news[0]);
-  const rest = $derived($demo.news.slice(1, 3));
+  let { data } = $props();
 
-  // Newest albums first, then their photos. Flattened so the hero card shows
-  // the most recent documentation rather than a hand-picked image. Repeated
-  // images are dropped so the slideshow never shows the same photo twice.
-  const albumSlides = $derived(
-    [...new Map(
-      [...$demo.albums]
-        .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))
-        .flatMap(album =>
-          (album.photos?.length ? album.photos : album.photo ? [{ id: album.id, url: album.photo, alt: album.name }] : [])
-            .map(photo => ({
-              url: photo.url,
-              alt: `${photo.alt || album.name} (album ${album.name})`
-            }))
-        )
-        .map(slide => [slide.url, slide] as const)
-    ).values()]
+  // Hanya angka kependudukan pokok yang tampil di hero; laki-laki/perempuan
+  // dibiarkan untuk halaman Data Desa supaya barisnya tidak berdesakan.
+  const facts = $derived(
+    data.statistics
+      .filter(s => s.category === 'Kependudukan')
+      .filter(s => !['Laki-laki', 'Perempuan'].includes(s.label))
   );
+  const featured = $derived(data.news[0]);
+  const rest = $derived(data.news.slice(1, 3));
+
+  const heroImage = $derived(mediaUrl(data.settings?.hero, ''));
+  const logo = $derived(mediaUrl(data.settings?.logo, ''));
+  const principalPhoto = $derived(mediaUrl(data.principal?.photo, ''));
+  const contactPhone = $derived(data.contact?.phone ?? '');
+  const contactMessage = $derived(data.contact?.message ?? '');
 </script>
 
 <Meta />
 <section class="hero-shell">
   <div class="hero-media">
-    <img src={$demo.settings.hero} width="1800" height="1200" fetchpriority="high" alt="Foto ilustrasi lanskap pertanian saat matahari terbit, bukan dokumentasi Desa Soulowe" />
+    {#if heroImage}
+      <img src={heroImage} width="1800" height="1200" fetchpriority="high" alt={data.settings?.hero?.alt || 'Foto lanskap desa'} />
+    {/if}
   </div>
   <div class="hero-scrim" aria-hidden="true"></div>
 
@@ -52,7 +51,11 @@
 
       <aside class="hero-card" aria-label="Sekilas kantor desa">
         <div class="hero-card-figure">
-          <HeroSlides slides={albumSlides} label="Foto terbaru dari album galeri desa" />
+          {#if data.slides.length}
+            <HeroSlides slides={data.slides} label="Foto terbaru dari album galeri desa" />
+          {:else}
+            <div class="hero-slides-empty"><Compass size={28} /><span>Belum ada foto galeri</span></div>
+          {/if}
         </div>
         <div class="hero-card-body">
           <h2>Kantor desa</h2>
@@ -64,14 +67,16 @@
 
     <div class="hero-foot">
       <div class="hero-facts">
-        {#each facts as item, i}
+        {#each facts as item, i (item.id)}
           {#if i > 0}<span class="divider" aria-hidden="true"></span>{/if}
-          <span class="fact"><strong>{number(item.value)}</strong>{item.name}</span>
+          <span class="fact"><strong>{number(item.value)}</strong>{item.label}</span>
         {/each}
       </div>
       <div class="hero-social">
         <span>Layanan warga</span>
-        <a href={whatsapp($demo.contact.phone, $demo.contact.message)} target="_blank" rel="noreferrer" aria-label="Hubungi desa lewat WhatsApp"><Phone size={16} /></a>
+        {#if contactPhone}
+          <a href={whatsapp(contactPhone, contactMessage)} target="_blank" rel="noreferrer" aria-label="Hubungi desa lewat WhatsApp"><Phone size={16} /></a>
+        {/if}
         <a href="/kontak" aria-label="Lihat lokasi kantor desa"><MapPin size={16} /></a>
         <a href="/galeri" aria-label="Buka galeri desa"><Compass size={16} /></a>
       </div>
@@ -83,7 +88,7 @@
       <defs><path id="seal-path" d="M58,58 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" /></defs>
       <text><textPath href="#seal-path" startOffset="0">SOULOWE · SIGI KOTA · SULAWESI TENGAH · </textPath></text>
     </svg>
-    <span class="seal-core"><img src={$demo.settings.logo} alt="" width="22" height="32" /></span>
+    <span class="seal-core">{#if logo}<img src={logo} alt="" width="22" height="32" />{/if}</span>
   </div>
 </section>
 
@@ -94,8 +99,8 @@
       <span>Data desa 2026, sesuai dokumen profil</span>
     </div>
     <div class="data-band-grid">
-      {#each $demo.statistics.filter(s => s.category === 'Kependudukan') as item}
-        <div class="data-cell"><span>{item.name}</span><strong>{number(item.value)}<small>{item.unit}</small></strong></div>
+      {#each data.statistics.filter(s => s.category === 'Kependudukan') as item (item.id)}
+        <div class="data-cell"><span>{item.label}</span><strong>{number(item.value)}<small>{item.unit}</small></strong></div>
       {/each}
       <a class="data-band-link" href="/data"><span>Data lengkap</span><ArrowUpRight size={22} /></a>
     </div>
@@ -120,15 +125,20 @@
 <section class="welcome-band">
   <div class="container welcome-panel" use:reveal>
     <div class="welcome-portrait">
-      {#if $demo.principal.photo}<img src={$demo.principal.photo} alt={$demo.principal.name} />
-      {:else}<img class="portrait-emblem" src={$demo.settings.logo} alt="Lambang Kabupaten Sigi, foto Kepala Desa belum tersedia" /><span>PEMERINTAH DESA SOULOWE</span>{/if}
+      {#if principalPhoto}
+        <img src={principalPhoto} alt={data.principal?.name ?? 'Kepala Desa'} />
+      {:else if logo}
+        <img class="portrait-emblem" src={logo} alt="Lambang Kabupaten Sigi, foto Kepala Desa belum tersedia" /><span>PEMERINTAH DESA SOULOWE</span>
+      {:else}
+        <UserRound size={72} strokeWidth={1} />
+      {/if}
       <small>Foto dan identitas resmi akan diperbarui</small>
     </div>
     <div class="welcome-copy">
       <span class="eyebrow">Dari Kepala Desa</span>
       <h2>Salam untuk masyarakat Soulowe.</h2>
-      <p class="welcome-quote">{$demo.principal.greeting.split('\n')[0]}</p>
-      <div class="signature"><strong>{$demo.principal.name}</strong><span>Kepala Desa, identitas sementara</span></div>
+      <p class="welcome-quote">{data.principal?.greeting.split('\n')[0] ?? ''}</p>
+      <div class="signature"><strong>{data.principal?.name ?? 'Kepala Desa'}</strong><span>Kepala Desa{data.principal?.is_dummy ? ', identitas sementara' : ''}</span></div>
       <a href="/pemerintahan" class="text-link">Perangkat desa dan BPD <ArrowUpRight size={18} /></a>
     </div>
   </div>
@@ -139,37 +149,43 @@
     <div><span class="eyebrow">Kabar dari desa</span><h2>Yang sedang dibicarakan.</h2></div>
     <a href="/berita" class="text-link">Semua berita <ArrowRight size={18} /></a>
   </div>
-  <div class="news-feature-grid" use:reveal={60}>
-    {#if featured}
+  {#if featured}
+    <div class="news-feature-grid" use:reveal={60}>
       <AnimatedBorder class="feature-frame" contentClassName="feature-surface">
         <article class="news-feature">
           <a class="feature-media" href={`/berita/${featured.slug}`} tabindex="-1" aria-hidden="true">
-            <img src={featured.photo} alt="" width="1200" height="760" loading="lazy" />
+            {#if mediaUrl(featured.cover)}
+              <img src={mediaUrl(featured.cover)} alt="" width="1200" height="760" loading="lazy" />
+            {/if}
           </a>
           <div class="feature-body">
-            <div class="feature-meta"><span>{featured.category}</span><span>{featured.dummy ? 'Konten contoh' : featured.author}</span></div>
-            <h3><a href={`/berita/${featured.slug}`}>{featured.name}</a></h3>
+            <div class="feature-meta"><span>{featured.category || 'Kabar Desa'}</span><span>{featured.is_dummy ? 'Konten contoh' : featured.author || 'Pemerintah Desa'}</span></div>
+            <h3><a href={`/berita/${featured.slug}`}>{featured.title}</a></h3>
             <p>{featured.summary}</p>
             <a class="text-link" href={`/berita/${featured.slug}`}>Baca berita <ArrowUpRight size={16} /></a>
           </div>
         </article>
       </AnimatedBorder>
-    {/if}
-    <div class="news-side">
-      {#each rest as item}
-        <article class="news-row">
-          <a class="row-media" href={`/berita/${item.slug}`} tabindex="-1" aria-hidden="true">
-            <img src={item.photo} alt="" width="600" height="440" loading="lazy" />
-          </a>
-          <div class="row-body">
-            <time datetime={item.date}>{date(item.date)}</time>
-            <h3><a href={`/berita/${item.slug}`}>{item.name}</a></h3>
-            <small>{item.dummy ? 'Konten contoh, foto ilustrasi' : item.author}</small>
-          </div>
-        </article>
-      {/each}
+      <div class="news-side">
+        {#each rest as item (item.id)}
+          <article class="news-row">
+            <a class="row-media" href={`/berita/${item.slug}`} tabindex="-1" aria-hidden="true">
+              {#if mediaUrl(item.cover)}
+                <img src={mediaUrl(item.cover)} alt="" width="600" height="440" loading="lazy" />
+              {/if}
+            </a>
+            <div class="row-body">
+              <time datetime={item.published_on}>{date(item.published_on)}</time>
+              <h3><a href={`/berita/${item.slug}`}>{item.title}</a></h3>
+              <small>{item.is_dummy ? 'Konten contoh, foto ilustrasi' : item.author || 'Pemerintah Desa'}</small>
+            </div>
+          </article>
+        {/each}
+      </div>
     </div>
-  </div>
+  {:else}
+    <State title="Belum ada berita" message="Berita yang diterbitkan operator akan muncul di sini." />
+  {/if}
 </section>
 
 <section class="info-panel">
@@ -188,14 +204,20 @@
     <div><span class="eyebrow">Galeri desa</span><h2>Catatan dalam foto.</h2><p>Ruang untuk menyimpan dokumentasi kegiatan desa.</p></div>
     <a href="/galeri" class="text-link">Buka galeri <ArrowRight size={18} /></a>
   </div>
-  <div class="gallery-grid">
-    {#each $demo.albums.slice(0, 2) as album, i}
-      <a href={`/galeri/${album.slug}`} class="gallery-tile" use:reveal={i * 70}>
-        <img src={album.photo} alt={album.name + ', foto ilustrasi'} width="1000" height="700" loading="lazy" />
-        <div><span>{album.photos?.length || 0} foto, album contoh</span><h3>{album.name}<ArrowUpRight size={20} /></h3></div>
-      </a>
-    {/each}
-  </div>
+  {#if data.albums.length}
+    <div class="gallery-grid">
+      {#each data.albums.slice(0, 2) as album, i (album.id)}
+        <a href={`/galeri/${album.slug}`} class="gallery-tile" use:reveal={i * 70}>
+          {#if mediaUrl(album.cover)}
+            <img src={mediaUrl(album.cover)} alt={album.cover?.alt || album.name} width="1000" height="700" loading="lazy" />
+          {/if}
+          <div><span>{album.photos?.[0]?.count ?? 0} foto{album.is_dummy ? ', album contoh' : ''}</span><h3>{album.name}<ArrowUpRight size={20} /></h3></div>
+        </a>
+      {/each}
+    </div>
+  {:else}
+    <State title="Belum ada album galeri" message="Album yang dibuat operator akan tampil di sini." />
+  {/if}
 </section>
 
 <section class="location-section container" use:reveal>

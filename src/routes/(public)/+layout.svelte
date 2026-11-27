@@ -1,5 +1,5 @@
 <script lang="ts">
   import PublicShell from '$lib/components/PublicShell.svelte';
-  let { children } = $props();
+  let { data, children } = $props();
 </script>
-<PublicShell>{@render children()}</PublicShell>
+<PublicShell settings={data.settings} contact={data.contact}>{@render children()}</PublicShell>

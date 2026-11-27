@@ -3,7 +3,7 @@
   import { goto } from '$app/navigation';
   import { MediaQuery } from 'svelte/reactivity';
   import { LayoutDashboard, MessageSquare, Users, ChartColumn, Building2, Landmark, Newspaper, Images, Phone, Image, Settings, LogOut, ArrowUpRight, Menu, X } from '@lucide/svelte';
-  import { demo } from '$lib/mock/store';
+  import { sendJson } from '$lib/data/client';
   import State from '$lib/components/State.svelte';
   let { children, data } = $props();
   let menu = $state(false);
@@ -30,7 +30,7 @@
     if (busy) return;
     busy = true;
     try {
-      await fetch('/api/admin/auth/logout', { method: 'POST' });
+      await sendJson('/api/admin/auth/logout', 'POST');
     } finally {
       busy = false;
       await goto('/admin/login');
@@ -47,7 +47,7 @@
     {#if menu && !wide.current}<button class="sidebar-scrim" aria-label="Tutup navigasi operator" onclick={() => menu = false}></button>{/if}
     <aside class="admin-sidebar" class:open={menu} inert={!wide.current && !menu}>
       <a class="brand" href="/admin">
-        <img src={$demo.settings.logo} alt="Lambang Kabupaten Sigi" width="34" height="48" />
+        <img src="/logo.png" alt="Lambang Kabupaten Sigi" width="34" height="48" />
         <span><strong>SOULOWE</strong><small>Ruang Operator</small></span>
       </a>
       <button class="icon-button sidebar-close" onclick={() => menu = false} aria-label="Tutup menu"><X /></button>

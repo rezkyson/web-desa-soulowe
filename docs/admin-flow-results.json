@@ -1,0 +1,20 @@
+{
+  "base": "http://127.0.0.1:4173",
+  "checkedAt": "2026-11-27T08:01:29.032Z",
+  "checks": [
+    "login as operator@desasoulowe.id",
+    "session persists across requests via cookie",
+    "dashboard: 3 berita, 2 album, tahun 2026",
+    "news created with slug \"uji-alur-admin-1795766476354\"",
+    "new news is immediately visible publicly (no draft state)",
+    "editing the title keeps the existing slug",
+    "empty title rejected with 422 and a field message",
+    "invalid date format rejected",
+    "album created with slug \"album-uji-1795766476354\"",
+    "cover photo from a different album is rejected with a clear message",
+    "official created",
+    "logout invalidates the session",
+    "test data removed"
+  ],
+  "error": null
+}

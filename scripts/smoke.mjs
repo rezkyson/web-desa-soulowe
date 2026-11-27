@@ -62,14 +62,19 @@ try {
   checks.push('Mobile navigation works');
   await go('/tidak-ada');
   assert.equal(await page.locator('h1').textContent(), 'Halaman belumdapat ditemukan.');
-  await go('/berita/slug-tidak-ada');
-  await page.getByRole('heading', { name: 'Berita tidak ditemukan' }).waitFor();
+  // Slug yang tidak ada sekarang menghasilkan 404 sungguhan dari server, bukan
+  // halaman 200 berisi pesan "tidak ditemukan". Itu yang diuji di sini.
+  const missingNews = await go('/berita/slug-tidak-ada');
+  assert.equal(missingNews?.status(), 404, 'berita tidak dikenal harus 404');
+  await page.getByRole('heading', { name: 'Halaman belum dapat ditemukan.' }).waitFor();
+  const missingAlbum = await go('/galeri/slug-tidak-ada');
+  assert.equal(missingAlbum?.status(), 404, 'album tidak dikenal harus 404');
   await go('/galeri/lanskap-dan-suasana-desa');
   await page.getByRole('button', { name: /Perbesar foto/ }).first().click();
   assert(await page.locator('dialog').evaluate(d => d.open));
   await page.keyboard.press('Escape');
   assert(!(await page.locator('dialog').evaluate(d => d.open)));
-  checks.push('404, missing news, gallery lightbox');
+  checks.push('404 pages, missing news/album, gallery lightbox');
   await go('/admin');
   // Panel admin sekarang dijaga sesi operator sungguhan, bukan demo.
   await page.getByRole('heading', { name: /Sesi operator diperlukan/i }).waitFor();
